@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/dm-dashboard/static/css/main.bbdfc554.css",
+    "main.js": "/dm-dashboard/static/js/main.e03097e0.js",
+    "index.html": "/dm-dashboard/index.html",
+    "main.bbdfc554.css.map": "/dm-dashboard/static/css/main.bbdfc554.css.map",
+    "main.e03097e0.js.map": "/dm-dashboard/static/js/main.e03097e0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bbdfc554.css",
+    "static/js/main.e03097e0.js"
+  ]
+}
