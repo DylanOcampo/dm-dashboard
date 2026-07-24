@@ -1,0 +1,98 @@
+.time-module {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.75rem;
+}
+
+.time-module__tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.time-module__tab {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.time-module__tab.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.time-module__display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.time-module__value {
+  font-size: clamp(1.8rem, 12cqw, 3rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.time-module__value--done {
+  color: var(--danger);
+  animation: time-module-pulse 1s infinite;
+}
+
+@keyframes time-module-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.time-module__caption {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.time-module__controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.time-module__controls button {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-header);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.time-module__controls button:hover {
+  border-color: var(--accent);
+}
+
+.time-module__minutes {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.time-module__minutes input {
+  width: 3.5rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}

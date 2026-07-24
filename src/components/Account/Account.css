@@ -1,0 +1,103 @@
+.account {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.account__intro {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.account__login-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.account__login-form input {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.account__login-form button {
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.account__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+}
+
+.account__badge {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface-header);
+  color: var(--text-muted);
+}
+
+.account__badge.is-premium {
+  background: var(--gold);
+  color: #241a00;
+}
+
+.account__warning {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: var(--surface-header);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+}
+
+.account__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.account__actions button {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-header);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.account__subscribe {
+  background: var(--gold) !important;
+  color: #241a00 !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+.account__logout:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.account__disclaimer {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0;
+}
