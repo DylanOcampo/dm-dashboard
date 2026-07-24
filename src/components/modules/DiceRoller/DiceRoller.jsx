@@ -16,7 +16,7 @@ function rollDie(sides) {
 }
 
 export default function DiceRoller({ instanceId }) {
-  const { syncOptions } = useApp();
+  const { syncOptions, t } = useApp();
   const [state, setState] = usePersistedState(
     `diceRoller:${instanceId}`,
     () => ({ counts: createDefaultCounts(), history: [] }),
@@ -72,19 +72,19 @@ export default function DiceRoller({ instanceId }) {
       </div>
 
       <button type="button" className="dice-roller__roll-btn" onClick={roll} disabled={totalDiceSelected === 0}>
-        🎲 Tirar {totalDiceSelected > 0 ? `(${totalDiceSelected})` : ''}
+        {t('dice.rollButton')} {totalDiceSelected > 0 ? `(${totalDiceSelected})` : ''}
       </button>
 
       <div className="dice-roller__history">
         <div className="dice-roller__history-header">
-          <span>Historial</span>
+          <span>{t('dice.historyTitle')}</span>
           {history.length > 0 && (
             <button type="button" className="dice-roller__clear" onClick={clearHistory}>
-              Limpiar
+              {t('dice.clearButton')}
             </button>
           )}
         </div>
-        {history.length === 0 && <p className="dice-roller__empty">Sin tiradas todavía.</p>}
+        {history.length === 0 && <p className="dice-roller__empty">{t('dice.emptyHistory')}</p>}
         <ul className="dice-roller__history-list">
           {history.map((entry) => (
             <li key={entry.id} className="dice-roller__history-item">

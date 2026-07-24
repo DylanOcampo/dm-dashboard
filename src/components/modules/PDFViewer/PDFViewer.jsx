@@ -6,7 +6,7 @@ import './PDFViewer.css';
 const PDF_PICKER_TYPES = [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }];
 
 export default function PDFViewer({ instanceId }) {
-  const { syncOptions } = useApp();
+  const { syncOptions, t } = useApp();
   const {
     files,
     error,
@@ -16,7 +16,11 @@ export default function PDFViewer({ instanceId }) {
     fileInputRef,
     handleFileInputChange,
     isFileSystemAccessSupported,
-  } = useLinkedFiles(`pdfLinks:${instanceId}`, { syncOptions, pickerTypes: PDF_PICKER_TYPES });
+  } = useLinkedFiles(`pdfLinks:${instanceId}`, {
+    syncOptions,
+    pickerTypes: PDF_PICKER_TYPES,
+    linkErrorMessage: t('fileViewer.linkErrorGeneric'),
+  });
 
   const [activeId, setActiveId] = useState(null);
   const [objectUrl, setObjectUrl] = useState(null);
@@ -63,7 +67,7 @@ export default function PDFViewer({ instanceId }) {
     <div className="pdf-viewer">
       <div className="pdf-viewer__toolbar">
         <button type="button" onClick={pickFiles}>
-          + Vincular PDF
+          {t('fileViewer.linkPdfButton')}
         </button>
         <input
           type="file"
@@ -74,7 +78,7 @@ export default function PDFViewer({ instanceId }) {
           onChange={handleFileInputChange}
         />
         {!isFileSystemAccessSupported && (
-          <span className="pdf-viewer__hint">Este navegador guarda una copia local del archivo.</span>
+          <span className="pdf-viewer__hint">{t('fileViewer.localCopyHint')}</span>
         )}
       </div>
       {error && <p className="pdf-viewer__error">{error}</p>}
@@ -90,7 +94,7 @@ export default function PDFViewer({ instanceId }) {
                 type="button"
                 className="pdf-viewer__file-remove"
                 onClick={() => removeFile(f.id)}
-                aria-label={`Quitar ${f.name}`}
+                aria-label={t('fileViewer.removeFileAria', { name: f.name })}
               >
                 ×
               </button>
@@ -100,12 +104,12 @@ export default function PDFViewer({ instanceId }) {
       )}
 
       <div className="pdf-viewer__content">
-        {files.length === 0 && <p className="pdf-viewer__empty">Sin PDFs vinculados.</p>}
+        {files.length === 0 && <p className="pdf-viewer__empty">{t('fileViewer.emptyPdf')}</p>}
         {files.length > 0 && needsPermission && (
           <div className="pdf-viewer__permission">
-            <p>Se necesita permiso para leer este archivo de nuevo.</p>
+            <p>{t('fileViewer.permissionNeeded')}</p>
             <button type="button" onClick={grantAccess}>
-              Conceder acceso
+              {t('fileViewer.grantAccessButton')}
             </button>
           </div>
         )}

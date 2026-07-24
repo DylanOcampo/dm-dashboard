@@ -14,6 +14,7 @@ export default function MonsterReference({ instanceId }) {
     addEnemyToCombat,
     getCombat,
     syncOptions,
+    t,
   } = useApp();
   const [config, setConfig] = usePersistedState(
     `monsterReference:${instanceId}`,
@@ -40,18 +41,18 @@ export default function MonsterReference({ instanceId }) {
     <div className="monster-reference">
       <div className="monster-reference__toolbar">
         <button type="button" onClick={addEnemy}>
-          + Enemigo
+          {t('monsterReference.addEnemyButton')}
         </button>
         {initiativeInstances.length > 1 && (
           <label className="monster-reference__linker">
-            Tracker:
+            {t('monsterReference.trackerLabel')}
             <select
               value={linkedId ?? ''}
               onChange={(e) => setConfig((prev) => ({ ...prev, linkedInstanceId: e.target.value }))}
             >
               {initiativeInstances.map((it, idx) => (
                 <option key={it.i} value={it.i}>
-                  Tracker de Iniciativa {idx + 1}
+                  {t('conditionTracker.trackerOption', { n: idx + 1 })}
                 </option>
               ))}
             </select>
@@ -60,16 +61,10 @@ export default function MonsterReference({ instanceId }) {
       </div>
 
       {initiativeInstances.length === 0 && (
-        <p className="monster-reference__hint">
-          Agrega un módulo "Tracker de Iniciativa" para poder enviar enemigos al combate.
-        </p>
+        <p className="monster-reference__hint">{t('monsterReference.hintNoInitiative')}</p>
       )}
 
-      {enemies.length === 0 && (
-        <p className="monster-reference__empty">
-          Sin enemigos guardados. Agrégalos aquí o en la sección "Enemigos".
-        </p>
-      )}
+      {enemies.length === 0 && <p className="monster-reference__empty">{t('monsterReference.emptyNoEnemies')}</p>}
 
       <ul className="monster-reference__list">
         {enemies.map((enemy) => {
@@ -82,10 +77,10 @@ export default function MonsterReference({ instanceId }) {
                   className="monster-reference__name"
                   value={enemy.name}
                   onChange={(e) => updateEnemy(enemy.id, { name: e.target.value })}
-                  placeholder="Nombre"
+                  placeholder={t('monsterReference.namePlaceholder')}
                 />
                 <label className="monster-reference__stat">
-                  AC
+                  {t('monsterReference.acLabel')}
                   <input
                     type="number"
                     min="0"
@@ -94,7 +89,7 @@ export default function MonsterReference({ instanceId }) {
                   />
                 </label>
                 <label className="monster-reference__stat">
-                  PG
+                  {t('monsterReference.hpLabel')}
                   <input
                     type="number"
                     min="1"
@@ -103,7 +98,7 @@ export default function MonsterReference({ instanceId }) {
                   />
                 </label>
                 <label className="monster-reference__stat monster-reference__stat--speed">
-                  Vel.
+                  {t('monsterReference.speedLabel')}
                   <input
                     type="text"
                     value={enemy.speed}
@@ -115,7 +110,7 @@ export default function MonsterReference({ instanceId }) {
                 className="monster-reference__attacks"
                 value={enemy.attacks}
                 onChange={(e) => updateEnemy(enemy.id, { attacks: e.target.value })}
-                placeholder="Ataques / habilidades..."
+                placeholder={t('monsterReference.attacksPlaceholder')}
                 rows={2}
               />
 
@@ -147,15 +142,15 @@ export default function MonsterReference({ instanceId }) {
                   onClick={() => linkedId && addEnemyToCombat(linkedId, enemy)}
                   disabled={!linkedId}
                 >
-                  + Combate
+                  {t('monsterReference.addToCombatButton')}
                 </button>
                 <button
                   type="button"
                   className="monster-reference__remove"
                   onClick={() => removeEnemy(enemy.id)}
-                  aria-label={`Eliminar ${enemy.name}`}
+                  aria-label={t('monsterReference.removeAria', { name: enemy.name })}
                 >
-                  Eliminar
+                  {t('monsterReference.removeButton')}
                 </button>
               </div>
             </li>

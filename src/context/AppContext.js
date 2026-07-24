@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { usePersistedState } from '../hooks/usePersistedState';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 import { createDefaultLootTable } from '../data/defaultLootTable';
+import { translate, DEFAULT_LANGUAGE } from '../i18n/language';
 
 const AppContext = createContext(null);
 
@@ -19,25 +20,29 @@ function createDefaultLayout() {
   ];
 }
 
-const ALL_MODULES = [
-  { id: 'time', label: 'Tiempo' },
-  { id: 'music', label: 'Música' },
-  { id: 'initiative', label: 'Tracker de Iniciativa' },
-  { id: 'loot', label: 'Loot Generator' },
-  { id: 'notes', label: 'Notas' },
-  { id: 'dice', label: 'Dados' },
-  { id: 'soundboard', label: 'Soundboard' },
-  { id: 'pdf', label: 'Visor de PDF' },
-  { id: 'image', label: 'Visor de Imágenes' },
-  { id: 'condition', label: 'Condition Tracker' },
-  { id: 'hp', label: 'HP Tracker' },
-  { id: 'monsters', label: 'Monster Reference' },
-  { id: 'calculator', label: 'Calculadora' },
+const ALL_MODULE_IDS = [
+  'time',
+  'music',
+  'initiative',
+  'loot',
+  'notes',
+  'dice',
+  'soundboard',
+  'pdf',
+  'image',
+  'condition',
+  'hp',
+  'monsters',
+  'calculator',
 ];
 
 const EMPTY_COMBAT = { combatants: [], currentTurnIndex: 0 };
 
 export function AppProvider({ children }) {
+  // --- Idioma (persistido localmente; ver src/i18n/language.js) ---
+  const [language, setLanguage] = usePersistedState('language', DEFAULT_LANGUAGE);
+  const t = useCallback((key, vars) => translate(language, key, vars), [language]);
+
   // --- Cuenta / suscripción (mock, sin pago real todavía) ---
   const [user, setUser] = useState(() => ({ id: null, email: null, isAuthenticated: false, isPremium: false }));
 
@@ -64,12 +69,12 @@ export function AppProvider({ children }) {
       ...prev,
       {
         id: uuid(),
-        name: `Jugador ${prev.length + 1}`,
+        name: t('players.defaultName', { n: prev.length + 1 }),
         level: 1,
         color: PLAYER_COLORS[prev.length % PLAYER_COLORS.length],
       },
     ]);
-  }, [setPlayers]);
+  }, [setPlayers, t]);
 
   const updatePlayer = useCallback(
     (id, changes) => {
@@ -160,7 +165,7 @@ export function AppProvider({ children }) {
       ...prev,
       {
         id: uuid(),
-        name: `Enemigo ${prev.length + 1}`,
+        name: t('enemies.defaultName', { n: prev.length + 1 }),
         color: ENEMY_COLORS[prev.length % ENEMY_COLORS.length],
         ac: 10,
         hpMax: 10,
@@ -169,7 +174,7 @@ export function AppProvider({ children }) {
         notes: '',
       },
     ]);
-  }, [setEnemies]);
+  }, [setEnemies, t]);
 
   const updateEnemy = useCallback(
     (id, changes) => {
@@ -227,8 +232,16 @@ export function AppProvider({ children }) {
     [setDashboardLayout, removeCombat]
   );
 
+  const allModules = useMemo(
+    () => ALL_MODULE_IDS.map((id) => ({ id, label: t(`dashboard.modules.${id}`) })),
+    [t]
+  );
+
   const value = useMemo(
     () => ({
+      language,
+      setLanguage,
+      t,
       user,
       login,
       logout,
@@ -254,9 +267,12 @@ export function AppProvider({ children }) {
       setDashboardLayout,
       addModuleInstance,
       removeModuleInstance,
-      allModules: ALL_MODULES,
+      allModules,
     }),
     [
+      language,
+      setLanguage,
+      t,
       user,
       login,
       logout,
@@ -280,6 +296,7 @@ export function AppProvider({ children }) {
       setDashboardLayout,
       addModuleInstance,
       removeModuleInstance,
+      allModules,
       syncOptions,
     ]
   );

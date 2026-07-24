@@ -8,7 +8,7 @@ const IMAGE_PICKER_TYPES = [
 ];
 
 export default function ImageViewer({ instanceId }) {
-  const { syncOptions } = useApp();
+  const { syncOptions, t } = useApp();
   const {
     files,
     error,
@@ -18,7 +18,11 @@ export default function ImageViewer({ instanceId }) {
     fileInputRef,
     handleFileInputChange,
     isFileSystemAccessSupported,
-  } = useLinkedFiles(`imageLinks:${instanceId}`, { syncOptions, pickerTypes: IMAGE_PICKER_TYPES });
+  } = useLinkedFiles(`imageLinks:${instanceId}`, {
+    syncOptions,
+    pickerTypes: IMAGE_PICKER_TYPES,
+    linkErrorMessage: t('fileViewer.linkErrorGeneric'),
+  });
 
   const [activeId, setActiveId] = useState(null);
   const [objectUrl, setObjectUrl] = useState(null);
@@ -61,13 +65,13 @@ export default function ImageViewer({ instanceId }) {
     }
   };
 
-  const activeName = files.find((f) => f.id === activeId)?.name ?? 'Imagen';
+  const activeName = files.find((f) => f.id === activeId)?.name ?? t('fileViewer.emptyImage');
 
   return (
     <div className="image-viewer">
       <div className="image-viewer__toolbar">
         <button type="button" onClick={pickFiles}>
-          + Vincular imagen
+          {t('fileViewer.linkImageButton')}
         </button>
         <input
           type="file"
@@ -78,7 +82,7 @@ export default function ImageViewer({ instanceId }) {
           onChange={handleFileInputChange}
         />
         {!isFileSystemAccessSupported && (
-          <span className="image-viewer__hint">Este navegador guarda una copia local del archivo.</span>
+          <span className="image-viewer__hint">{t('fileViewer.localCopyHint')}</span>
         )}
       </div>
       {error && <p className="image-viewer__error">{error}</p>}
@@ -94,7 +98,7 @@ export default function ImageViewer({ instanceId }) {
                 type="button"
                 className="image-viewer__file-remove"
                 onClick={() => removeFile(f.id)}
-                aria-label={`Quitar ${f.name}`}
+                aria-label={t('fileViewer.removeFileAria', { name: f.name })}
               >
                 ×
               </button>
@@ -104,12 +108,12 @@ export default function ImageViewer({ instanceId }) {
       )}
 
       <div className="image-viewer__content">
-        {files.length === 0 && <p className="image-viewer__empty">Sin imágenes vinculadas.</p>}
+        {files.length === 0 && <p className="image-viewer__empty">{t('fileViewer.emptyImage')}</p>}
         {files.length > 0 && needsPermission && (
           <div className="image-viewer__permission">
-            <p>Se necesita permiso para leer este archivo de nuevo.</p>
+            <p>{t('fileViewer.permissionNeeded')}</p>
             <button type="button" onClick={grantAccess}>
-              Conceder acceso
+              {t('fileViewer.grantAccessButton')}
             </button>
           </div>
         )}

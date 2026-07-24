@@ -39,6 +39,15 @@
   color: var(--accent-contrast);
 }
 
+.nav__language {
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
 .nav__status {
   font-size: 0.8rem;
   color: var(--text-muted);

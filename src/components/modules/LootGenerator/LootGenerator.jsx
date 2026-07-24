@@ -4,14 +4,14 @@ import { useApp } from '../../../context/AppContext';
 import { RARITY_ORDER } from '../../../data/defaultLootTable';
 import './LootGenerator.css';
 
-const ANY_CATEGORY = 'Cualquiera';
+const ANY_CATEGORY = '__ANY__';
 
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
 export default function LootGenerator() {
-  const { lootTable } = useApp();
+  const { lootTable, t } = useApp();
   const [category, setCategory] = useState(ANY_CATEGORY);
   const [quantity, setQuantity] = useState(3);
   const [results, setResults] = useState([]);
@@ -48,7 +48,7 @@ export default function LootGenerator() {
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           {categories.map((c) => (
             <option key={c} value={c}>
-              {c}
+              {c === ANY_CATEGORY ? t('loot.categoryAny') : c}
             </option>
           ))}
         </select>
@@ -60,13 +60,11 @@ export default function LootGenerator() {
           onChange={(e) => setQuantity(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
         />
         <button type="button" onClick={generate} disabled={pool.length === 0}>
-          Generar
+          {t('loot.generateButton')}
         </button>
       </div>
 
-      {pool.length === 0 && (
-        <p className="loot-generator__empty">No hay items en esta categoría. Agrégalos en la Loot Table.</p>
-      )}
+      {pool.length === 0 && <p className="loot-generator__empty">{t('loot.emptyCategory')}</p>}
 
       <ul className="loot-generator__results">
         {results.map((item) => (
@@ -76,13 +74,13 @@ export default function LootGenerator() {
               <span className="loot-generator__item-rarity">{item.rarity}</span>
             </div>
             <p className="loot-generator__item-description">{item.description}</p>
-            <span className="loot-generator__item-value">{item.value} oro</span>
+            <span className="loot-generator__item-value">{t('loot.itemValue', { value: item.value })}</span>
           </li>
         ))}
       </ul>
 
       {results.length > 0 && (
-        <div className="loot-generator__total">Valor total: {totalValue} oro</div>
+        <div className="loot-generator__total">{t('loot.total', { total: totalValue })}</div>
       )}
     </div>
   );

@@ -6,7 +6,7 @@ import { CONDITION_TYPES } from '../../../data/conditions';
 import './ConditionTracker.css';
 
 export default function ConditionTracker({ instanceId }) {
-  const { dashboardLayout, getCombat, updateCombatants, syncOptions } = useApp();
+  const { dashboardLayout, getCombat, updateCombatants, syncOptions, t } = useApp();
   const [config, setConfig] = usePersistedState(
     `conditionTracker:${instanceId}`,
     { linkedInstanceId: null },
@@ -30,9 +30,7 @@ export default function ConditionTracker({ instanceId }) {
   if (initiativeInstances.length === 0) {
     return (
       <div className="condition-tracker">
-        <p className="condition-tracker__empty">
-          Agrega primero un módulo "Tracker de Iniciativa" para poder asignar condiciones a sus combatientes.
-        </p>
+        <p className="condition-tracker__empty">{t('conditionTracker.emptyNoInitiative')}</p>
       </div>
     );
   }
@@ -71,14 +69,14 @@ export default function ConditionTracker({ instanceId }) {
       {initiativeInstances.length > 1 && (
         <div className="condition-tracker__linker">
           <label>
-            Tracker vinculado:
+            {t('conditionTracker.linkedLabel')}
             <select
               value={linkedId ?? ''}
               onChange={(e) => setConfig((prev) => ({ ...prev, linkedInstanceId: e.target.value }))}
             >
               {initiativeInstances.map((it, idx) => (
                 <option key={it.i} value={it.i}>
-                  Tracker de Iniciativa {idx + 1}
+                  {t('conditionTracker.trackerOption', { n: idx + 1 })}
                 </option>
               ))}
             </select>
@@ -86,13 +84,11 @@ export default function ConditionTracker({ instanceId }) {
         </div>
       )}
 
-      <p className="condition-tracker__hint">
-        Las duraciones bajan al completar una ronda ("Siguiente turno" en el Tracker vinculado).
-      </p>
+      <p className="condition-tracker__hint">{t('conditionTracker.hint')}</p>
 
       <ul className="condition-tracker__list">
         {combatants.length === 0 && (
-          <li className="condition-tracker__empty">Sin combatientes en el Tracker vinculado.</li>
+          <li className="condition-tracker__empty">{t('conditionTracker.emptyNoCombatants')}</li>
         )}
         {combatants.map((combatant) => (
           <li key={combatant.id} className="condition-tracker__row" style={{ borderLeftColor: combatant.color }}>
@@ -103,21 +99,22 @@ export default function ConditionTracker({ instanceId }) {
                   type="button"
                   className="condition-tracker__remove-combatant"
                   onClick={() => removeCombatant(combatant.id)}
-                  aria-label={`Quitar a ${combatant.name} del combate`}
+                  aria-label={t('conditionTracker.removeCombatantAria', { name: combatant.name })}
                 >
                   ×
                 </button>
               </div>
               <div className="condition-tracker__badges">
                 {(combatant.conditions || []).map((cond) => {
-                  const meta = CONDITION_TYPES.find((t) => t.id === cond.type);
+                  const meta = CONDITION_TYPES.find((ty) => ty.id === cond.type);
+                  const label = t(`conditions.${cond.type}`);
                   return (
                     <span key={cond.id} className="condition-tracker__badge">
-                      {meta?.emoji} {meta?.label} ({cond.remainingRounds})
+                      {meta?.emoji} {label} ({cond.remainingRounds})
                       <button
                         type="button"
                         onClick={() => removeCondition(combatant.id, cond.id)}
-                        aria-label={`Quitar ${meta?.label} de ${combatant.name}`}
+                        aria-label={t('conditionTracker.removeConditionAria', { condition: label, name: combatant.name })}
                       >
                         ×
                       </button>
@@ -133,19 +130,19 @@ export default function ConditionTracker({ instanceId }) {
               >
                 {CONDITION_TYPES.map((type) => (
                   <option key={type.id} value={type.id}>
-                    {type.emoji} {type.label}
+                    {type.emoji} {t(`conditions.${type.id}`)}
                   </option>
                 ))}
               </select>
               <input
                 type="number"
                 min="1"
-                title="Duración en rondas"
+                title={t('conditionTracker.durationTitle')}
                 value={durationByRow[combatant.id] ?? 1}
                 onChange={(e) => setDurationByRow((prev) => ({ ...prev, [combatant.id]: e.target.value }))}
               />
               <button type="button" onClick={() => addCondition(combatant.id)}>
-                + Agregar
+                {t('conditionTracker.addButton')}
               </button>
             </div>
           </li>

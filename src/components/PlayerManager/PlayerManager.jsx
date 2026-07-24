@@ -2,18 +2,18 @@ import { useApp } from '../../context/AppContext';
 import './PlayerManager.css';
 
 export default function PlayerManager() {
-  const { players, addPlayer, updatePlayer, removePlayer } = useApp();
+  const { players, addPlayer, updatePlayer, removePlayer, t } = useApp();
 
   return (
     <section className="player-manager">
       <header className="player-manager__header">
-        <h2>Jugadores</h2>
+        <h2>{t('players.title')}</h2>
         <button type="button" onClick={addPlayer}>
-          + Agregar jugador
+          {t('players.addButton')}
         </button>
       </header>
 
-      {players.length === 0 && <p className="player-manager__empty">Aún no has agregado jugadores.</p>}
+      {players.length === 0 && <p className="player-manager__empty">{t('players.emptyList')}</p>}
 
       <ul className="player-manager__list">
         {players.map((player) => (
@@ -23,17 +23,17 @@ export default function PlayerManager() {
               className="player-manager__color"
               value={player.color}
               onChange={(e) => updatePlayer(player.id, { color: e.target.value })}
-              aria-label={`Color de ${player.name}`}
+              aria-label={t('players.colorAria', { name: player.name })}
             />
             <input
               type="text"
               className="player-manager__name"
               value={player.name}
               onChange={(e) => updatePlayer(player.id, { name: e.target.value })}
-              placeholder="Nombre del jugador"
+              placeholder={t('players.namePlaceholder')}
             />
             <label className="player-manager__level-label">
-              Nivel
+              {t('players.levelLabel')}
               <input
                 type="number"
                 min="1"
@@ -47,9 +47,9 @@ export default function PlayerManager() {
               type="button"
               className="player-manager__remove"
               onClick={() => removePlayer(player.id)}
-              aria-label={`Eliminar a ${player.name}`}
+              aria-label={t('players.removeAria', { name: player.name })}
             >
-              Eliminar
+              {t('players.removeButton')}
             </button>
           </li>
         ))}

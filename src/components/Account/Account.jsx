@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import './Account.css';
 
 export default function Account() {
-  const { user, login, logout, setPremium, isSupabaseConfigured } = useApp();
+  const { user, login, logout, setPremium, isSupabaseConfigured, t } = useApp();
   const [emailInput, setEmailInput] = useState('');
 
   const handleLogin = (e) => {
@@ -17,62 +17,50 @@ export default function Account() {
   if (!user.isAuthenticated) {
     return (
       <section className="account">
-        <h2>Mi cuenta</h2>
-        <p className="account__intro">
-          Sin cuenta, todo tu contenido (jugadores, loot table, notas, layout) se guarda solo en
-          este navegador. Crea una cuenta y suscríbete para respaldar tu sesión en la nube.
-        </p>
+        <h2>{t('account.title')}</h2>
+        <p className="account__intro">{t('account.introGuest')}</p>
         <form className="account__login-form" onSubmit={handleLogin}>
           <input
             type="email"
-            placeholder="tu@email.com"
+            placeholder={t('account.emailPlaceholder')}
             value={emailInput}
             onChange={(e) => setEmailInput(e.target.value)}
             required
           />
-          <button type="submit">Crear cuenta / Ingresar</button>
+          <button type="submit">{t('account.loginButton')}</button>
         </form>
-        <p className="account__disclaimer">
-          Este es un flujo de demostración: no se realiza ningún cobro ni autenticación real todavía.
-        </p>
+        <p className="account__disclaimer">{t('account.disclaimerGuest')}</p>
       </section>
     );
   }
 
   return (
     <section className="account">
-      <h2>Mi cuenta</h2>
+      <h2>{t('account.title')}</h2>
       <div className="account__info">
         <span className="account__email">{user.email}</span>
         <span className={`account__badge ${user.isPremium ? 'is-premium' : ''}`}>
-          {user.isPremium ? 'Suscripción activa' : 'Plan gratuito'}
+          {user.isPremium ? t('account.planPremium') : t('account.planFree')}
         </span>
       </div>
 
-      {!isSupabaseConfigured && (
-        <p className="account__warning">
-          Aún no hay un proyecto Supabase conectado (faltan las variables de entorno), así que por
-          ahora tus datos se siguen guardando en este navegador incluso con la suscripción activa.
-        </p>
-      )}
+      {!isSupabaseConfigured && <p className="account__warning">{t('account.warningNoSupabase')}</p>}
 
       <div className="account__actions">
         {user.isPremium ? (
           <button type="button" onClick={() => setPremium(false)}>
-            Cancelar suscripción
+            {t('account.cancelButton')}
           </button>
         ) : (
           <button type="button" className="account__subscribe" onClick={() => setPremium(true)}>
-            Suscribirse y guardar en la nube
+            {t('account.subscribeButton')}
           </button>
         )}
         <button type="button" className="account__logout" onClick={logout}>
-          Cerrar sesión
+          {t('account.logoutButton')}
         </button>
       </div>
-      <p className="account__disclaimer">
-        Este es un flujo de demostración: no se realiza ningún cobro real todavía.
-      </p>
+      <p className="account__disclaimer">{t('account.disclaimerUser')}</p>
     </section>
   );
 }

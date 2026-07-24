@@ -35,24 +35,8 @@ const MODULE_COMPONENTS = {
   calculator: Calculator,
 };
 
-const MODULE_TITLES = {
-  time: 'Tiempo',
-  music: 'Música',
-  initiative: 'Tracker de Iniciativa',
-  loot: 'Loot Generator',
-  notes: 'Notas',
-  dice: 'Dados',
-  soundboard: 'Soundboard',
-  pdf: 'Visor de PDF',
-  image: 'Visor de Imágenes',
-  condition: 'Condition Tracker',
-  hp: 'HP Tracker',
-  monsters: 'Monster Reference',
-  calculator: 'Calculadora',
-};
-
 export default function Dashboard() {
-  const { dashboardLayout, setDashboardLayout, allModules, addModuleInstance, removeModuleInstance } = useApp();
+  const { dashboardLayout, setDashboardLayout, allModules, addModuleInstance, removeModuleInstance, t } = useApp();
   const [selectedModuleType, setSelectedModuleType] = useState(allModules[0]?.id ?? '');
 
   const layouts = useMemo(() => ({ lg: dashboardLayout, md: dashboardLayout, sm: dashboardLayout }), [dashboardLayout]);
@@ -74,7 +58,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard__toolbar">
-        <span className="dashboard__toolbar-label">Agregar módulo:</span>
+        <span className="dashboard__toolbar-label">{t('dashboard.addModuleLabel')}</span>
         <select
           className="dashboard__module-select"
           value={selectedModuleType}
@@ -87,7 +71,7 @@ export default function Dashboard() {
           ))}
         </select>
         <button type="button" className="dashboard__module-add" onClick={handleAddModule}>
-          + Agregar
+          {t('dashboard.addButton')}
         </button>
       </div>
 
@@ -107,15 +91,16 @@ export default function Dashboard() {
           const moduleType = item.type || item.i;
           const ModuleComponent = MODULE_COMPONENTS[moduleType];
           if (!ModuleComponent) return null;
+          const moduleTitle = t(`dashboard.modules.${moduleType}`);
           return (
             <div key={item.i} className="widget">
               <div className="widget__header">
-                <span>{MODULE_TITLES[moduleType]}</span>
+                <span>{moduleTitle}</span>
                 <button
                   type="button"
                   className="widget__close"
                   onClick={() => removeModuleInstance(item.i)}
-                  aria-label={`Quitar módulo ${MODULE_TITLES[moduleType]}`}
+                  aria-label={t('dashboard.removeModuleAria', { name: moduleTitle })}
                 >
                   ×
                 </button>

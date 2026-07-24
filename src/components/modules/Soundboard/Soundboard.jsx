@@ -6,7 +6,7 @@ import { extractYouTubeId, loadYouTubeIframeApi } from '../../../services/youtub
 import './Soundboard.css';
 
 export default function Soundboard({ instanceId }) {
-  const { syncOptions } = useApp();
+  const { syncOptions, t } = useApp();
   const [clips, setClips] = usePersistedState(`soundboard:${instanceId}`, [], syncOptions);
 
   const [urlInput, setUrlInput] = useState('');
@@ -103,7 +103,7 @@ export default function Soundboard({ instanceId }) {
     e.preventDefault();
     const videoId = extractYouTubeId(urlInput.trim());
     if (!videoId) {
-      setError('Ese no parece un link válido de YouTube.');
+      setError(t('soundboard.errorInvalidUrl'));
       return;
     }
     const start = Math.max(0, Number(startInput) || 0);
@@ -121,21 +121,21 @@ export default function Soundboard({ instanceId }) {
       <form className="soundboard__form" onSubmit={handleAdd}>
         <input
           type="text"
-          placeholder="Link de YouTube..."
+          placeholder={t('soundboard.urlPlaceholder')}
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
         />
         <div className="soundboard__time-inputs">
           <label>
-            Inicio (seg)
+            {t('soundboard.startLabel')}
             <input type="number" min="0" value={startInput} onChange={(e) => setStartInput(e.target.value)} />
           </label>
           <label>
-            Fin (seg)
+            {t('soundboard.endLabel')}
             <input type="number" min="1" value={endInput} onChange={(e) => setEndInput(e.target.value)} />
           </label>
           <label>
-            Emoji
+            {t('soundboard.emojiLabel')}
             <input
               type="text"
               maxLength="4"
@@ -144,7 +144,7 @@ export default function Soundboard({ instanceId }) {
             />
           </label>
         </div>
-        <button type="submit">+ Agregar clip</button>
+        <button type="submit">{t('soundboard.addClipButton')}</button>
       </form>
       {error && <p className="soundboard__error">{error}</p>}
 
@@ -153,7 +153,7 @@ export default function Soundboard({ instanceId }) {
       </div>
 
       <div className="soundboard__grid">
-        {clips.length === 0 && <p className="soundboard__empty">Sin clips agregados.</p>}
+        {clips.length === 0 && <p className="soundboard__empty">{t('soundboard.emptyClips')}</p>}
         {clips.map((clip) => {
           const isPlaying = clip.id === activeClipId && playerState === 1;
           return (
@@ -170,7 +170,7 @@ export default function Soundboard({ instanceId }) {
                 type="button"
                 className="soundboard__remove"
                 onClick={() => handleRemove(clip)}
-                aria-label="Eliminar clip"
+                aria-label={t('soundboard.removeClipAria')}
               >
                 ×
               </button>

@@ -4,17 +4,8 @@ import { useApp } from '../../context/AppContext';
 import { parseJSONItems, parseCSVItems } from '../../services/bulkImport';
 import './LootTableManager.css';
 
-const JSON_PLACEHOLDER = `[
-  { "category": "Común", "name": "Poción de curación", "description": "Restaura 2d4+2 puntos de golpe", "value": 50 },
-  { "category": "Rara", "name": "Espada +1", "description": "Espada mágica que otorga +1 a los ataques", "value": 500 }
-]`;
-
-const CSV_PLACEHOLDER = `category,name,description,value
-Común,Poción de curación,Restaura 2d4+2 puntos de golpe,50
-Rara,Espada +1,Espada mágica que otorga +1 a los ataques,500`;
-
 export default function LootTableManager() {
-  const { lootTable, setLootTable } = useApp();
+  const { lootTable, setLootTable, t } = useApp();
   const [newCategoryName, setNewCategoryName] = useState('');
 
   const [bulkFormat, setBulkFormat] = useState('json');
@@ -43,7 +34,7 @@ export default function LootTableManager() {
       ...prev,
       [category]: [
         ...prev[category],
-        { id: uuid(), name: `Objeto ${prev[category].length + 1}`, description: '', value: 0 },
+        { id: uuid(), name: t('lootTable.defaultItemName', { n: prev[category].length + 1 }), description: '', value: 0 },
       ],
     }));
   };
@@ -66,7 +57,7 @@ export default function LootTableManager() {
     setBulkSuccess('');
     setBulkError('');
     if (!bulkText.trim()) {
-      setBulkError('Pega primero los items a importar.');
+      setBulkError(t('lootTable.errorPasteFirst'));
       return;
     }
     let items;
@@ -77,7 +68,7 @@ export default function LootTableManager() {
       return;
     }
     if (items.length === 0) {
-      setBulkError('No se encontraron items para importar.');
+      setBulkError(t('lootTable.errorNoItemsFound'));
       return;
     }
     setLootTable((prev) => {
@@ -91,50 +82,48 @@ export default function LootTableManager() {
       });
       return next;
     });
-    setBulkSuccess(`Se importaron ${items.length} item(s) correctamente.`);
+    setBulkSuccess(t('lootTable.successImported', { count: items.length }));
     setBulkText('');
   };
 
   return (
     <section className="loot-table-manager">
       <header className="loot-table-manager__header">
-        <h2>Loot Table</h2>
+        <h2>{t('lootTable.title')}</h2>
         <form className="loot-table-manager__add-category" onSubmit={addCategory}>
           <input
             type="text"
-            placeholder="Nueva categoría (ej. Legendaria)"
+            placeholder={t('lootTable.newCategoryPlaceholder')}
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
           />
-          <button type="submit">+ Categoría</button>
+          <button type="submit">{t('lootTable.addCategoryButton')}</button>
         </form>
       </header>
 
       <div className="loot-table-manager__bulk">
         <div className="loot-table-manager__bulk-header">
-          <h3>Importar en bulk</h3>
+          <h3>{t('lootTable.bulkTitle')}</h3>
           <label className="loot-table-manager__bulk-format">
-            Formato:
+            {t('lootTable.formatLabel')}
             <select value={bulkFormat} onChange={(e) => setBulkFormat(e.target.value)}>
               <option value="json">JSON</option>
               <option value="csv">CSV</option>
             </select>
           </label>
         </div>
-        <p className="loot-table-manager__bulk-hint">
-          La categoría se crea automáticamente si no existe. Campos: category, name, description, value.
-        </p>
+        <p className="loot-table-manager__bulk-hint">{t('lootTable.bulkHint')}</p>
         <textarea
           className="loot-table-manager__bulk-textarea"
           value={bulkText}
           onChange={(e) => setBulkText(e.target.value)}
-          placeholder={bulkFormat === 'json' ? JSON_PLACEHOLDER : CSV_PLACEHOLDER}
+          placeholder={bulkFormat === 'json' ? t('lootTable.jsonPlaceholder') : t('lootTable.csvPlaceholder')}
           rows={6}
         />
         {bulkError && <p className="loot-table-manager__bulk-error">{bulkError}</p>}
         {bulkSuccess && <p className="loot-table-manager__bulk-success">{bulkSuccess}</p>}
         <button type="button" className="loot-table-manager__bulk-submit" onClick={handleBulkImport}>
-          Importar
+          {t('lootTable.importButton')}
         </button>
       </div>
 
@@ -144,15 +133,19 @@ export default function LootTableManager() {
             <h3>{category}</h3>
             <div className="loot-table-manager__category-actions">
               <button type="button" onClick={() => addItem(category)}>
-                + Item
+                {t('lootTable.addItemButton')}
               </button>
-              <button type="button" className="loot-table-manager__remove-category" onClick={() => removeCategory(category)}>
-                Eliminar categoría
+              <button
+                type="button"
+                className="loot-table-manager__remove-category"
+                onClick={() => removeCategory(category)}
+              >
+                {t('lootTable.removeCategoryButton')}
               </button>
             </div>
           </div>
 
-          {items.length === 0 && <p className="loot-table-manager__empty">Sin items en esta categoría.</p>}
+          {items.length === 0 && <p className="loot-table-manager__empty">{t('lootTable.emptyCategory')}</p>}
 
           <ul className="loot-table-manager__items">
             {items.map((item) => (
@@ -162,14 +155,14 @@ export default function LootTableManager() {
                   className="loot-table-manager__item-name"
                   value={item.name}
                   onChange={(e) => updateItem(category, item.id, { name: e.target.value })}
-                  placeholder="Nombre"
+                  placeholder={t('lootTable.namePlaceholder')}
                 />
                 <input
                   type="text"
                   className="loot-table-manager__item-description"
                   value={item.description}
                   onChange={(e) => updateItem(category, item.id, { description: e.target.value })}
-                  placeholder="Descripción"
+                  placeholder={t('lootTable.descriptionPlaceholder')}
                 />
                 <input
                   type="number"
@@ -182,7 +175,7 @@ export default function LootTableManager() {
                   type="button"
                   className="loot-table-manager__remove-item"
                   onClick={() => removeItem(category, item.id)}
-                  aria-label={`Eliminar ${item.name}`}
+                  aria-label={t('lootTable.removeItemAria', { name: item.name })}
                 >
                   ×
                 </button>

@@ -5,10 +5,10 @@ import { usePersistedState } from '../../../hooks/usePersistedState';
 import './NotesModule.css';
 
 export default function NotesModule({ instanceId }) {
-  const { syncOptions } = useApp();
+  const { syncOptions, t } = useApp();
   const [notes, setNotes] = usePersistedState(
     `notes:${instanceId}`,
-    () => [{ id: uuid(), title: 'Nota 1', content: '' }],
+    () => [{ id: uuid(), title: t('notes.defaultTitle', { n: 1 }), content: '' }],
     syncOptions
   );
   const [pageIndex, setPageIndex] = useState(0);
@@ -20,7 +20,7 @@ export default function NotesModule({ instanceId }) {
   const goNext = () => setPageIndex((i) => Math.min(notes.length - 1, i + 1));
 
   const addNotePage = () => {
-    setNotes((prev) => [...prev, { id: uuid(), title: `Nota ${prev.length + 1}`, content: '' }]);
+    setNotes((prev) => [...prev, { id: uuid(), title: t('notes.defaultTitle', { n: prev.length + 1 }), content: '' }]);
   };
 
   const updateNotePage = (id, changes) => {
@@ -50,28 +50,28 @@ export default function NotesModule({ instanceId }) {
           className="notes-module__title"
           value={currentNote.title}
           onChange={(e) => updateNotePage(currentNote.id, { title: e.target.value })}
-          placeholder="Título de la nota"
+          placeholder={t('notes.titlePlaceholder')}
         />
         <textarea
           className="notes-module__content"
           value={currentNote.content}
           onChange={(e) => updateNotePage(currentNote.id, { content: e.target.value })}
-          placeholder="Escribe aquí..."
+          placeholder={t('notes.contentPlaceholder')}
         />
       </div>
 
       <div className="notes-module__footer">
         <button type="button" onClick={goPrev} disabled={currentIndex === 0}>
-          ‹ Anterior
+          {t('notes.prevButton')}
         </button>
         <span className="notes-module__page-indicator">
-          Página {currentIndex + 1} / {notes.length}
+          {t('notes.pageIndicator', { current: currentIndex + 1, total: notes.length })}
         </span>
         <button type="button" onClick={goNext} disabled={currentIndex === notes.length - 1}>
-          Siguiente ›
+          {t('notes.nextButton')}
         </button>
         <button type="button" className="notes-module__new" onClick={handleNewPage}>
-          + Nueva
+          {t('notes.newButton')}
         </button>
         <button
           type="button"
@@ -79,7 +79,7 @@ export default function NotesModule({ instanceId }) {
           onClick={handleDeletePage}
           disabled={notes.length <= 1}
         >
-          Eliminar
+          {t('notes.deleteButton')}
         </button>
       </div>
     </div>

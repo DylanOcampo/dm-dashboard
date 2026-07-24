@@ -6,7 +6,7 @@ import './HPTracker.css';
 const DEFAULT_HP = { current: 10, max: 10 };
 
 export default function HPTracker({ instanceId }) {
-  const { dashboardLayout, getCombat, updateCombatants, syncOptions } = useApp();
+  const { dashboardLayout, getCombat, updateCombatants, syncOptions, t } = useApp();
   const [config, setConfig] = usePersistedState(`hpTracker:${instanceId}`, { linkedInstanceId: null }, syncOptions);
 
   const initiativeInstances = dashboardLayout.filter((item) => (item.type || item.i) === 'initiative');
@@ -24,9 +24,7 @@ export default function HPTracker({ instanceId }) {
   if (initiativeInstances.length === 0) {
     return (
       <div className="hp-tracker">
-        <p className="hp-tracker__empty">
-          Agrega primero un módulo "Tracker de Iniciativa" para poder llevar el HP de sus combatientes.
-        </p>
+        <p className="hp-tracker__empty">{t('hpTracker.emptyNoInitiative')}</p>
       </div>
     );
   }
@@ -76,14 +74,14 @@ export default function HPTracker({ instanceId }) {
       {initiativeInstances.length > 1 && (
         <div className="hp-tracker__linker">
           <label>
-            Tracker vinculado:
+            {t('hpTracker.linkedLabel')}
             <select
               value={linkedId ?? ''}
               onChange={(e) => setConfig((prev) => ({ ...prev, linkedInstanceId: e.target.value }))}
             >
               {initiativeInstances.map((it, idx) => (
                 <option key={it.i} value={it.i}>
-                  Tracker de Iniciativa {idx + 1}
+                  {t('conditionTracker.trackerOption', { n: idx + 1 })}
                 </option>
               ))}
             </select>
@@ -92,7 +90,7 @@ export default function HPTracker({ instanceId }) {
       )}
 
       <ul className="hp-tracker__list">
-        {combatants.length === 0 && <li className="hp-tracker__empty">Sin combatientes en el Tracker vinculado.</li>}
+        {combatants.length === 0 && <li className="hp-tracker__empty">{t('hpTracker.emptyNoCombatants')}</li>}
         {combatants.map((combatant) => {
           const hp = combatant.hp || DEFAULT_HP;
           const pct = Math.max(0, Math.min(100, (hp.current / hp.max) * 100));
@@ -108,7 +106,7 @@ export default function HPTracker({ instanceId }) {
                   type="button"
                   className="hp-tracker__remove"
                   onClick={() => removeCombatant(combatant.id)}
-                  aria-label={`Quitar a ${combatant.name}`}
+                  aria-label={t('hpTracker.removeAria', { name: combatant.name })}
                 >
                   ×
                 </button>
@@ -139,7 +137,7 @@ export default function HPTracker({ instanceId }) {
                   +5
                 </button>
                 <label className="hp-tracker__max-label">
-                  Máx
+                  {t('hpTracker.maxLabel')}
                   <input
                     type="number"
                     min="1"

@@ -9,7 +9,7 @@ const VIDEO_MIN_WIDTH = 260;
 const VIDEO_MIN_HEIGHT = 220;
 
 export default function MusicModule({ instanceId }) {
-  const { syncOptions } = useApp();
+  const { syncOptions, t } = useApp();
   const [musicPlaylist, setMusicPlaylist] = usePersistedState(`musicPlaylist:${instanceId}`, [], syncOptions);
   const [urlInput, setUrlInput] = useState('');
   const [error, setError] = useState('');
@@ -95,7 +95,7 @@ export default function MusicModule({ instanceId }) {
     const trimmed = urlInput.trim();
     const videoId = extractYouTubeId(trimmed);
     if (!videoId) {
-      setError('Ese no parece un link válido de YouTube.');
+      setError(t('music.errorInvalidUrl'));
       return;
     }
     setMusicPlaylist((prev) => [...prev, { id: uuid(), videoId, url: trimmed, title: trimmed }]);
@@ -108,11 +108,11 @@ export default function MusicModule({ instanceId }) {
       <form className="music-module__form" onSubmit={handleAdd}>
         <input
           type="text"
-          placeholder="Pega un link de YouTube..."
+          placeholder={t('music.urlPlaceholder')}
           value={urlInput}
           onChange={(e) => setUrlInput(e.target.value)}
         />
-        <button type="submit">Agregar</button>
+        <button type="submit">{t('music.addButton')}</button>
       </form>
       {error && <p className="music-module__error">{error}</p>}
 
@@ -121,7 +121,7 @@ export default function MusicModule({ instanceId }) {
       </div>
 
       <ul className="music-module__list">
-        {musicPlaylist.length === 0 && <li className="music-module__empty">Sin canciones agregadas.</li>}
+        {musicPlaylist.length === 0 && <li className="music-module__empty">{t('music.emptyList')}</li>}
         {musicPlaylist.map((track) => {
           const isActive = track.id === activeTrackId;
           const isPlaying = isActive && playerState === 1;
@@ -137,7 +137,7 @@ export default function MusicModule({ instanceId }) {
                 type="button"
                 className="music-module__remove-btn"
                 onClick={() => handleRemove(track)}
-                aria-label="Eliminar canción"
+                aria-label={t('music.removeAria')}
               >
                 ×
               </button>

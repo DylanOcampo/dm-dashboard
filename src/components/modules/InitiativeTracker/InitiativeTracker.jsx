@@ -10,7 +10,8 @@ function rollInitiative() {
 }
 
 export default function InitiativeTracker({ instanceId }) {
-  const { players, enemies, addEnemyToCombat, getCombat, updateCombatants, nextTurn, setCombatTurnIndex } = useApp();
+  const { players, enemies, addEnemyToCombat, getCombat, updateCombatants, nextTurn, setCombatTurnIndex, t } =
+    useApp();
   const [selectedPlayerId, setSelectedPlayerId] = useState('');
   const [selectedEnemyId, setSelectedEnemyId] = useState('');
 
@@ -77,7 +78,7 @@ export default function InitiativeTracker({ instanceId }) {
     <div className="initiative-tracker">
       <div className="initiative-tracker__toolbar">
         <select value={selectedPlayerId} onChange={(e) => setSelectedPlayerId(e.target.value)}>
-          <option value="">Agregar jugador...</option>
+          <option value="">{t('initiative.addPlayerPlaceholder')}</option>
           {availablePlayers.map((p) => (
             <option key={p.id} value={p.id}>
               {p.name}
@@ -85,10 +86,10 @@ export default function InitiativeTracker({ instanceId }) {
           ))}
         </select>
         <button type="button" onClick={addPlayerToCombat} disabled={!selectedPlayerId}>
-          + Jugador
+          {t('initiative.addPlayerButton')}
         </button>
         <select value={selectedEnemyId} onChange={(e) => setSelectedEnemyId(e.target.value)}>
-          <option value="">Agregar enemigo...</option>
+          <option value="">{t('initiative.addEnemyPlaceholder')}</option>
           {availableEnemies.map((e) => (
             <option key={e.id} value={e.id}>
               {e.name}
@@ -96,13 +97,13 @@ export default function InitiativeTracker({ instanceId }) {
           ))}
         </select>
         <button type="button" onClick={addEnemyToCombatHandler} disabled={!selectedEnemyId}>
-          + Enemigo
+          {t('initiative.addEnemyButton')}
         </button>
         <button type="button" onClick={randomizeInitiative} disabled={combatants.length === 0}>
-          Randomizar
+          {t('initiative.randomizeButton')}
         </button>
         <button type="button" onClick={() => nextTurn(instanceId)} disabled={combatants.length === 0}>
-          Siguiente turno
+          {t('initiative.nextTurnButton')}
         </button>
       </div>
 
@@ -111,7 +112,7 @@ export default function InitiativeTracker({ instanceId }) {
           {(provided) => (
             <ul className="initiative-tracker__list" ref={provided.innerRef} {...provided.droppableProps}>
               {combatants.length === 0 && (
-                <li className="initiative-tracker__empty">Sin combatientes. Agrega jugadores o enemigos.</li>
+                <li className="initiative-tracker__empty">{t('initiative.emptyList')}</li>
               )}
               {combatants.map((combatant, index) => (
                 <Draggable key={combatant.id} draggableId={combatant.id} index={index}>
@@ -138,25 +139,28 @@ export default function InitiativeTracker({ instanceId }) {
                         onChange={(e) => updateCombatant(combatant.id, { name: e.target.value })}
                       />
                       {combatant.type === 'player' && combatant.level != null && (
-                        <span className="initiative-tracker__level">Nv.{combatant.level}</span>
+                        <span className="initiative-tracker__level">
+                          {t('initiative.levelPrefix')}
+                          {combatant.level}
+                        </span>
                       )}
                       {combatant.hp && (
                         <span
                           className={`initiative-tracker__hp ${
                             combatant.hp.current <= 0 ? 'initiative-tracker__hp--down' : ''
                           }`}
-                          title="Ver detalle en el HP Tracker"
+                          title={t('initiative.hpTitleHint')}
                         >
                           ❤ {combatant.hp.current}/{combatant.hp.max}
                         </span>
                       )}
                       {combatant.ac != null && (
-                        <span className="initiative-tracker__ac" title={combatant.notes || 'Clase de Armadura'}>
+                        <span className="initiative-tracker__ac" title={combatant.notes || t('initiative.acTitleHint')}>
                           🛡 {combatant.ac}
                         </span>
                       )}
                       {combatant.conditions?.length > 0 && (
-                        <span className="initiative-tracker__conditions" title="Ver detalle en el Condition Tracker">
+                        <span className="initiative-tracker__conditions" title={t('initiative.conditionsTitleHint')}>
                           {combatant.conditions.map((cond) => (
                             <span key={cond.id} className="initiative-tracker__condition-badge">
                               {CONDITION_BY_ID[cond.type]?.emoji ?? '❓'}
@@ -169,7 +173,7 @@ export default function InitiativeTracker({ instanceId }) {
                         type="button"
                         className="initiative-tracker__remove"
                         onClick={() => removeCombatant(combatant.id)}
-                        aria-label={`Quitar a ${combatant.name}`}
+                        aria-label={t('initiative.removeAria', { name: combatant.name })}
                       >
                         ×
                       </button>

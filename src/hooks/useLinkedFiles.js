@@ -14,7 +14,7 @@ export const isFileSystemAccessSupported =
  * IndexedDB como respaldo. Solo el nombre/id se persiste (y sincroniza) como
  * metadata; el contenido del archivo nunca sale de este navegador.
  */
-export function useLinkedFiles(storageKey, { syncOptions, pickerTypes } = {}) {
+export function useLinkedFiles(storageKey, { syncOptions, pickerTypes, linkErrorMessage } = {}) {
   const [files, setFiles] = usePersistedState(storageKey, [], syncOptions);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
@@ -56,12 +56,12 @@ export function useLinkedFiles(storageKey, { syncOptions, pickerTypes } = {}) {
         const handles = await window.showOpenFilePicker({ multiple: true, types: pickerTypes });
         await addFromHandles(handles);
       } catch (err) {
-        if (err?.name !== 'AbortError') setError('No se pudo vincular el archivo.');
+        if (err?.name !== 'AbortError') setError(linkErrorMessage || 'Could not link the file.');
       }
     } else {
       fileInputRef.current?.click();
     }
-  }, [addFromHandles, pickerTypes]);
+  }, [addFromHandles, pickerTypes, linkErrorMessage]);
 
   const handleFileInputChange = useCallback(
     async (e) => {
