@@ -2,6 +2,86 @@
   padding: 1rem 1.5rem 3rem;
 }
 
+.dashboard__scenes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.dashboard__scene-tab {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dashboard__scene-tab:hover {
+  border-color: var(--accent);
+}
+
+.dashboard__scene-tab.is-active {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.3rem 0.2rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+}
+
+.dashboard__scene-name-input {
+  background: transparent;
+  border: none;
+  color: var(--accent-contrast);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.15rem 0;
+  width: 8rem;
+  max-width: 40vw;
+}
+
+.dashboard__scene-name-input:focus {
+  outline: none;
+}
+
+.dashboard__scene-remove {
+  background: rgba(0, 0, 0, 0.15);
+  border: none;
+  color: var(--accent-contrast);
+  border-radius: 50%;
+  width: 1.3rem;
+  height: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.dashboard__scene-remove:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dashboard__scene-add {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dashboard__scene-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .dashboard__toolbar {
   display: flex;
   flex-wrap: wrap;

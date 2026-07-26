@@ -1,0 +1,155 @@
+.npc-manager {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.npc-manager__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.npc-manager__header h2 {
+  margin: 0;
+}
+
+.npc-manager__header button {
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.npc-manager__empty {
+  color: var(--text-muted);
+}
+
+.npc-manager__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.npc-manager__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.npc-manager__main {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.npc-manager__color {
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.npc-manager__name {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.npc-manager__combat-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.npc-manager__description {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.npc-manager__combat-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--border);
+}
+
+.npc-manager__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.npc-manager__stat input {
+  width: 3rem;
+  padding: 0.35rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.npc-manager__stat--speed input {
+  width: 3.6rem;
+}
+
+.npc-manager__attacks {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
+.npc-manager__remove {
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.npc-manager__remove:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}

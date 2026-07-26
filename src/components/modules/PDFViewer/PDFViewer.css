@@ -83,6 +83,15 @@
   color: var(--danger);
 }
 
+.pdf-viewer__file-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pdf-viewer__file-remove:disabled:hover {
+  color: var(--text-muted);
+}
+
 .pdf-viewer__content {
   flex: 1;
   min-height: 0;

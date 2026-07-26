@@ -9,14 +9,18 @@ export default function Nav({ activeView, onChangeView }) {
     { id: 'dashboard', label: t('nav.dashboard') },
     { id: 'players', label: t('nav.players') },
     { id: 'enemies', label: t('nav.enemies') },
+    { id: 'npcs', label: t('nav.npcs') },
     { id: 'lootTable', label: t('nav.lootTable') },
+    ...(user.hasSubscribedBefore ? [{ id: 'fileManager', label: t('nav.fileManager') }] : []),
     { id: 'account', label: t('nav.account') },
   ];
 
   const statusLabel = user.isAuthenticated
     ? user.isPremium
       ? t('nav.statusCloud')
-      : t('nav.statusLocal')
+      : user.isInactiveSubscriber
+        ? t('nav.statusInactive')
+        : t('nav.statusLocal')
     : t('nav.statusGuest');
 
   return (

@@ -8,7 +8,7 @@ const IMAGE_PICKER_TYPES = [
 ];
 
 export default function ImageViewer({ instanceId }) {
-  const { syncOptions, t } = useApp();
+  const { syncOptions, t, user, refreshCloudFiles } = useApp();
   const {
     files,
     error,
@@ -22,6 +22,15 @@ export default function ImageViewer({ instanceId }) {
     syncOptions,
     pickerTypes: IMAGE_PICKER_TYPES,
     linkErrorMessage: t('fileViewer.linkErrorGeneric'),
+    cloud: {
+      enabled: user.isPremium,
+      userId: user.id,
+      moduleInstanceId: instanceId,
+      fileType: 'image',
+      onFilesChanged: refreshCloudFiles,
+      inactiveMessage: t('fileViewer.cloudInactiveMessage'),
+      quotaExceededMessage: t('fileViewer.quotaExceeded'),
+    },
   });
 
   const [activeId, setActiveId] = useState(null);
@@ -92,12 +101,13 @@ export default function ImageViewer({ instanceId }) {
           {files.map((f) => (
             <div key={f.id} className={`image-viewer__file-chip ${f.id === activeId ? 'is-active' : ''}`}>
               <button type="button" onClick={() => setActiveId(f.id)} title={f.name}>
-                🖼️ {f.name}
+                {f.kind === 'cloud' && !user.isPremium ? '🔒 ' : ''}🖼️ {f.name}
               </button>
               <button
                 type="button"
                 className="image-viewer__file-remove"
                 onClick={() => removeFile(f.id)}
+                disabled={f.kind === 'cloud' && !user.isPremium}
                 aria-label={t('fileViewer.removeFileAria', { name: f.name })}
               >
                 ×

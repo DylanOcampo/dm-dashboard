@@ -6,7 +6,7 @@ import './PDFViewer.css';
 const PDF_PICKER_TYPES = [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }];
 
 export default function PDFViewer({ instanceId }) {
-  const { syncOptions, t } = useApp();
+  const { syncOptions, t, user, refreshCloudFiles } = useApp();
   const {
     files,
     error,
@@ -20,6 +20,15 @@ export default function PDFViewer({ instanceId }) {
     syncOptions,
     pickerTypes: PDF_PICKER_TYPES,
     linkErrorMessage: t('fileViewer.linkErrorGeneric'),
+    cloud: {
+      enabled: user.isPremium,
+      userId: user.id,
+      moduleInstanceId: instanceId,
+      fileType: 'pdf',
+      onFilesChanged: refreshCloudFiles,
+      inactiveMessage: t('fileViewer.cloudInactiveMessage'),
+      quotaExceededMessage: t('fileViewer.quotaExceeded'),
+    },
   });
 
   const [activeId, setActiveId] = useState(null);
@@ -88,12 +97,13 @@ export default function PDFViewer({ instanceId }) {
           {files.map((f) => (
             <div key={f.id} className={`pdf-viewer__file-chip ${f.id === activeId ? 'is-active' : ''}`}>
               <button type="button" onClick={() => setActiveId(f.id)} title={f.name}>
-                📄 {f.name}
+                {f.kind === 'cloud' && !user.isPremium ? '🔒 ' : ''}📄 {f.name}
               </button>
               <button
                 type="button"
                 className="pdf-viewer__file-remove"
                 onClick={() => removeFile(f.id)}
+                disabled={f.kind === 'cloud' && !user.isPremium}
                 aria-label={t('fileViewer.removeFileAria', { name: f.name })}
               >
                 ×

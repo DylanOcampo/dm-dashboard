@@ -1,0 +1,7 @@
+# Stripe llama a este endpoint directamente y no manda un JWT de Supabase,
+# así que es el único que necesita verify_jwt = false. El resto (checkout,
+# portal, delete-account) validan el JWT del usuario a mano dentro de la
+# función; cleanup-expired-files la llama pg_cron con la service_role key,
+# que también es un JWT válido, así que se queda con la verificación default.
+[functions.stripe-webhook]
+verify_jwt = false

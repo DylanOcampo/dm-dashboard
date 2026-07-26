@@ -1,0 +1,156 @@
+.save-throw-tracker {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.save-throw-tracker__linker {
+  display: flex;
+}
+
+.save-throw-tracker__linker label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.save-throw-tracker__linker select {
+  padding: 0.3rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.save-throw-tracker__hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.save-throw-tracker__empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.save-throw-tracker__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.save-throw-tracker__row {
+  border-left: 4px solid var(--border);
+  background: var(--surface-header);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.save-throw-tracker__name {
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.save-throw-tracker__saves {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.save-throw-tracker__save-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.save-throw-tracker__save-label {
+  font-size: 0.72rem;
+  width: 3.2rem;
+  flex-shrink: 0;
+}
+
+.save-throw-tracker__save-label.is-success {
+  color: #4caf50;
+}
+
+.save-throw-tracker__save-label.is-failure {
+  color: var(--danger);
+}
+
+.save-throw-tracker__pips {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.save-throw-tracker__pip {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.save-throw-tracker__save-row:has(.is-success) .save-throw-tracker__pip.is-filled {
+  background: #4caf50;
+  border-color: #4caf50;
+}
+
+.save-throw-tracker__save-row:has(.is-failure) .save-throw-tracker__pip.is-filled {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.save-throw-tracker__save-btn {
+  margin-left: auto;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.save-throw-tracker__save-btn.is-success:hover {
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.save-throw-tracker__save-btn.is-failure:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.save-throw-tracker__dead {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.save-throw-tracker__dead button {
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 400;
+}

@@ -13,13 +13,13 @@
   line-height: 1.4;
 }
 
-.account__login-form {
+.account__auth-form {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
-.account__login-form input {
-  flex: 1;
+.account__auth-form input {
   padding: 0.5rem 0.7rem;
   border-radius: 6px;
   border: 1px solid var(--border);
@@ -27,7 +27,7 @@
   color: var(--text);
 }
 
-.account__login-form button {
+.account__auth-form button {
   padding: 0.5rem 0.9rem;
   border-radius: 6px;
   border: none;
@@ -35,6 +35,38 @@
   color: var(--accent-contrast);
   cursor: pointer;
   white-space: nowrap;
+}
+
+.account__auth-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.account__auth-switch {
+  display: flex;
+  justify-content: space-between;
+}
+
+.account__link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.account__error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.account__notice {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 0;
 }
 
 .account__info {
@@ -60,6 +92,11 @@
   color: #241a00;
 }
 
+.account__badge.is-inactive {
+  background: var(--danger);
+  color: #fff;
+}
+
 .account__warning {
   font-size: 0.82rem;
   color: var(--text-muted);
@@ -69,9 +106,40 @@
   padding: 0.6rem 0.8rem;
 }
 
+.account__warning--danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.account__usage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.account__usage-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-header);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.account__usage-fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+.account__usage-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 .account__actions {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .account__actions button {
@@ -84,16 +152,20 @@
   font-size: 0.85rem;
 }
 
-.account__subscribe {
-  background: var(--gold) !important;
-  color: #241a00 !important;
-  border: none !important;
-  font-weight: 600;
+.account__actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .account__logout:hover {
   border-color: var(--danger);
   color: var(--danger);
+}
+
+.account__delete {
+  margin-left: auto;
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
 }
 
 .account__disclaimer {

@@ -83,6 +83,15 @@
   color: var(--danger);
 }
 
+.image-viewer__file-remove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.image-viewer__file-remove:disabled:hover {
+  color: var(--text-muted);
+}
+
 .image-viewer__content {
   flex: 1;
   min-height: 0;

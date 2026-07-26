@@ -10,10 +10,21 @@ function rollInitiative() {
 }
 
 export default function InitiativeTracker({ instanceId }) {
-  const { players, enemies, addEnemyToCombat, getCombat, updateCombatants, nextTurn, setCombatTurnIndex, t } =
-    useApp();
+  const {
+    players,
+    enemies,
+    addEnemyToCombat,
+    npcs,
+    addNPCToCombat,
+    getCombat,
+    updateCombatants,
+    nextTurn,
+    setCombatTurnIndex,
+    t,
+  } = useApp();
   const [selectedPlayerId, setSelectedPlayerId] = useState('');
   const [selectedEnemyId, setSelectedEnemyId] = useState('');
+  const [selectedNpcId, setSelectedNpcId] = useState('');
 
   const { combatants, currentTurnIndex } = getCombat(instanceId);
 
@@ -46,6 +57,13 @@ export default function InitiativeTracker({ instanceId }) {
     setSelectedEnemyId('');
   };
 
+  const addNPCToCombatHandler = () => {
+    const npc = npcs.find((n) => n.id === selectedNpcId);
+    if (!npc) return;
+    addNPCToCombat(instanceId, npc);
+    setSelectedNpcId('');
+  };
+
   const removeCombatant = (id) => {
     updateThisCombat((prev) => prev.filter((c) => c.id !== id));
   };
@@ -73,6 +91,9 @@ export default function InitiativeTracker({ instanceId }) {
 
   const availablePlayers = players.filter((p) => !combatants.some((c) => c.playerId === p.id));
   const availableEnemies = enemies.filter((e) => !combatants.some((c) => c.sourceEnemyId === e.id));
+  const availableNpcs = npcs.filter(
+    (n) => n.isCombat && !combatants.some((c) => c.sourceNpcId === n.id)
+  );
 
   return (
     <div className="initiative-tracker">
@@ -98,6 +119,17 @@ export default function InitiativeTracker({ instanceId }) {
         </select>
         <button type="button" onClick={addEnemyToCombatHandler} disabled={!selectedEnemyId}>
           {t('initiative.addEnemyButton')}
+        </button>
+        <select value={selectedNpcId} onChange={(e) => setSelectedNpcId(e.target.value)}>
+          <option value="">{t('initiative.addNpcPlaceholder')}</option>
+          {availableNpcs.map((n) => (
+            <option key={n.id} value={n.id}>
+              {n.name}
+            </option>
+          ))}
+        </select>
+        <button type="button" onClick={addNPCToCombatHandler} disabled={!selectedNpcId}>
+          {t('initiative.addNpcButton')}
         </button>
         <button type="button" onClick={randomizeInitiative} disabled={combatants.length === 0}>
           {t('initiative.randomizeButton')}
@@ -159,6 +191,18 @@ export default function InitiativeTracker({ instanceId }) {
                           🛡 {combatant.ac}
                         </span>
                       )}
+                      {(combatant.type === 'player' || combatant.type === 'npc') &&
+                        combatant.hp &&
+                        combatant.hp.current <= 0 && (
+                          <span
+                            className={`initiative-tracker__death-save ${combatant.isDead ? 'is-dead' : ''}`}
+                            title={t('initiative.deathSaveTitleHint')}
+                          >
+                            {combatant.isDead
+                              ? '☠'
+                              : `🎲 ${combatant.deathSaves?.successes || 0}/${combatant.deathSaves?.failures || 0}`}
+                          </span>
+                        )}
                       {combatant.conditions?.length > 0 && (
                         <span className="initiative-tracker__conditions" title={t('initiative.conditionsTitleHint')}>
                           {combatant.conditions.map((cond) => (
