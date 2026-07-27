@@ -40,12 +40,101 @@
 
 .player-manager__row {
   display: flex;
-  align-items: center;
-  gap: 0.7rem;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: 0.6rem 0.8rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
+}
+
+.player-manager__main {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.player-manager__class {
+  width: 7rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.player-manager__stats-row {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.player-manager__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.player-manager__stat input {
+  width: 3.2rem;
+  padding: 0.35rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.player-manager__custom-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.player-manager__custom-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--surface-header);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.2rem 0.3rem;
+}
+
+.player-manager__custom-stat-label,
+.player-manager__custom-stat-value {
+  width: 5rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.78rem;
+}
+
+.player-manager__custom-stat-remove {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.player-manager__custom-stat-remove:hover {
+  color: var(--danger);
+}
+
+.player-manager__add-stat {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.78rem;
 }
 
 .player-manager__color {

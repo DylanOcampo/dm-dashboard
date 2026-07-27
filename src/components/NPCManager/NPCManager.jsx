@@ -1,4 +1,5 @@
 import { useApp } from '../../context/AppContext';
+import AvatarInput from '../common/AvatarInput/AvatarInput';
 import './NPCManager.css';
 
 export default function NPCManager() {
@@ -19,6 +20,11 @@ export default function NPCManager() {
         {npcs.map((npc) => (
           <li key={npc.id} className="npc-manager__row">
             <div className="npc-manager__main">
+              <AvatarInput
+                value={npc.avatar}
+                onChange={(avatar) => updateNPC(npc.id, { avatar })}
+                label={t('npcs.avatarLabel')}
+              />
               <input
                 type="color"
                 className="npc-manager__color"
@@ -40,6 +46,14 @@ export default function NPCManager() {
                   onChange={(e) => updateNPC(npc.id, { isCombat: e.target.checked })}
                 />
                 {t('npcs.isCombatLabel')}
+              </label>
+              <label className="npc-manager__reveal">
+                <input
+                  type="checkbox"
+                  checked={Boolean(npc.revealed)}
+                  onChange={(e) => updateNPC(npc.id, { revealed: e.target.checked })}
+                />
+                {t('npcs.revealedLabel')}
               </label>
               <button
                 type="button"

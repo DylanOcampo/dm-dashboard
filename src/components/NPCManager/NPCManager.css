@@ -75,7 +75,8 @@
   color: var(--text);
 }
 
-.npc-manager__combat-toggle {
+.npc-manager__combat-toggle,
+.npc-manager__reveal {
   display: flex;
   align-items: center;
   gap: 0.3rem;

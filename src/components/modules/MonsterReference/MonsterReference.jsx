@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { usePersistedState } from '../../../hooks/usePersistedState';
 import { CONDITION_BY_ID } from '../../../data/conditions';
+import AvatarInput from '../../common/AvatarInput/AvatarInput';
 import './MonsterReference.css';
 
 export default function MonsterReference({ instanceId }) {
@@ -72,6 +73,11 @@ export default function MonsterReference({ instanceId }) {
           return (
             <li key={enemy.id} className="monster-reference__card" style={{ borderLeftColor: enemy.color }}>
               <div className="monster-reference__row">
+                <AvatarInput
+                  value={enemy.avatar}
+                  onChange={(avatar) => updateEnemy(enemy.id, { avatar })}
+                  label={t('enemies.avatarLabel')}
+                />
                 <input
                   type="text"
                   className="monster-reference__name"
@@ -104,6 +110,14 @@ export default function MonsterReference({ instanceId }) {
                     value={enemy.speed}
                     onChange={(e) => updateEnemy(enemy.id, { speed: e.target.value })}
                   />
+                </label>
+                <label className="monster-reference__reveal">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(enemy.revealed)}
+                    onChange={(e) => updateEnemy(enemy.id, { revealed: e.target.checked })}
+                  />
+                  {t('enemies.revealedLabel')}
                 </label>
               </div>
               <textarea

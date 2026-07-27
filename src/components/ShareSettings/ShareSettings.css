@@ -1,0 +1,91 @@
+.share-settings {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.share-settings__intro,
+.share-settings__hint,
+.share-settings__loading {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.share-settings__warning {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: var(--surface-header);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+}
+
+.share-settings__toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.share-settings__link-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.share-settings__link-input {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-header);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+.share-settings__link-row button {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.share-settings__regenerate {
+  background: var(--surface-header) !important;
+  color: var(--text) !important;
+}
+
+.share-settings h3 {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+}
+
+.share-settings__module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.4rem;
+}
+
+.share-settings__module-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+
+.share-settings__error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0;
+}

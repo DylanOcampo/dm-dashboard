@@ -1,0 +1,93 @@
+.player-combat__empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.player-combat__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.player-combat__card {
+  border-left: 3px solid var(--border);
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.player-combat__card.is-current {
+  outline: 2px solid var(--accent);
+}
+
+.player-combat__card.is-you {
+  background: var(--surface-header);
+}
+
+.player-combat__initiative {
+  font-weight: 700;
+  min-width: 1.6rem;
+  text-align: center;
+}
+
+.player-combat__name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.player-combat__hp,
+.player-combat__ac {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.player-combat__hp.is-down {
+  color: var(--danger);
+}
+
+.player-combat__condition {
+  font-size: 0.75rem;
+  background: var(--surface-header);
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+}
+
+.player-combat__hp-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.player-combat__hp-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-header);
+  overflow: hidden;
+  margin-top: 0.3rem;
+}
+
+.player-combat__hp-fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+.player-combat__hp-fill.is-down {
+  background: var(--danger);
+}
+
+.player-combat__dead {
+  color: var(--danger);
+}
+
+.player-combat__saves {
+  font-size: 0.85rem;
+}

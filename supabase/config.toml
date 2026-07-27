@@ -5,3 +5,8 @@
 # que también es un JWT válido, así que se queda con la verificación default.
 [functions.stripe-webhook]
 verify_jwt = false
+
+# El jugador que abre un link compartido no tiene cuenta/JWT — el share_token
+# es la única credencial, validada a mano dentro de la función.
+[functions.get-shared-file-url]
+verify_jwt = false

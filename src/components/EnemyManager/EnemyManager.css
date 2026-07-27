@@ -75,6 +75,16 @@
   color: var(--text);
 }
 
+.enemy-manager__reveal {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .enemy-manager__stat {
   display: flex;
   align-items: center;

@@ -44,7 +44,8 @@ export default function InitiativeTracker({ instanceId }) {
         playerId: player.id,
         initiative: rollInitiative(),
         conditions: [],
-        hp: { current: 10, max: 10 },
+        hp: { current: player.hp?.max ?? 10, max: player.hp?.max ?? 10 },
+        ac: player.ac,
       },
     ]);
     setSelectedPlayerId('');

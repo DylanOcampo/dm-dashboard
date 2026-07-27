@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { usePersistedState } from '../../../hooks/usePersistedState';
 import { CONDITION_BY_ID } from '../../../data/conditions';
+import AvatarInput from '../../common/AvatarInput/AvatarInput';
 import './NPCReference.css';
 
 export default function NPCReference({ instanceId }) {
@@ -64,6 +65,11 @@ export default function NPCReference({ instanceId }) {
           return (
             <li key={npc.id} className="npc-reference__card" style={{ borderLeftColor: npc.color }}>
               <div className="npc-reference__row">
+                <AvatarInput
+                  value={npc.avatar}
+                  onChange={(avatar) => updateNPC(npc.id, { avatar })}
+                  label={t('npcs.avatarLabel')}
+                />
                 <input
                   type="text"
                   className="npc-reference__name"
@@ -78,6 +84,14 @@ export default function NPCReference({ instanceId }) {
                     onChange={(e) => updateNPC(npc.id, { isCombat: e.target.checked })}
                   />
                   {t('npcs.isCombatLabel')}
+                </label>
+                <label className="npc-reference__combat-toggle">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(npc.revealed)}
+                    onChange={(e) => updateNPC(npc.id, { revealed: e.target.checked })}
+                  />
+                  {t('npcs.revealedLabel')}
                 </label>
               </div>
 

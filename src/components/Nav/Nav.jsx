@@ -12,6 +12,7 @@ export default function Nav({ activeView, onChangeView }) {
     { id: 'npcs', label: t('nav.npcs') },
     { id: 'lootTable', label: t('nav.lootTable') },
     ...(user.hasSubscribedBefore ? [{ id: 'fileManager', label: t('nav.fileManager') }] : []),
+    ...(user.isAuthenticated ? [{ id: 'share', label: t('nav.share') }] : []),
     { id: 'account', label: t('nav.account') },
   ];
 

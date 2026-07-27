@@ -1,4 +1,5 @@
 import { useApp } from '../../context/AppContext';
+import AvatarInput from '../common/AvatarInput/AvatarInput';
 import './EnemyManager.css';
 
 export default function EnemyManager() {
@@ -19,6 +20,11 @@ export default function EnemyManager() {
         {enemies.map((enemy) => (
           <li key={enemy.id} className="enemy-manager__row">
             <div className="enemy-manager__main">
+              <AvatarInput
+                value={enemy.avatar}
+                onChange={(avatar) => updateEnemy(enemy.id, { avatar })}
+                label={t('enemies.avatarLabel')}
+              />
               <input
                 type="color"
                 className="enemy-manager__color"
@@ -58,6 +64,14 @@ export default function EnemyManager() {
                   value={enemy.speed}
                   onChange={(e) => updateEnemy(enemy.id, { speed: e.target.value })}
                 />
+              </label>
+              <label className="enemy-manager__reveal">
+                <input
+                  type="checkbox"
+                  checked={Boolean(enemy.revealed)}
+                  onChange={(e) => updateEnemy(enemy.id, { revealed: e.target.checked })}
+                />
+                {t('enemies.revealedLabel')}
               </label>
               <button
                 type="button"

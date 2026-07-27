@@ -1,15 +1,46 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatBytes } from '../../data/plans';
 import { deleteUserFile, getSignedUrl } from '../../services/fileStorageService';
 import './FileManager.css';
 
 export default function FileManager() {
-  const { t, user, scenes, cloudFiles, refreshCloudFiles, storageUsedBytes, subscription } = useApp();
+  const { t, user, scenes, cloudFiles, refreshCloudFiles, storageUsedBytes, subscription, share, updateShareConfig } =
+    useApp();
   const [sceneFilter, setSceneFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [busyId, setBusyId] = useState(null);
   const [error, setError] = useState('');
+
+  const shareAllFiles = Boolean(share?.share_all_files);
+  const sharedFileIds = share?.shared_file_ids || [];
+
+  // Ver el comentario equivalente en ShareSettings.jsx: evita que dos
+  // toggles rápidos se pisen entre sí por leer un `share` de React ya viejo.
+  const pendingFileIdsRef = useRef(sharedFileIds);
+  useEffect(() => {
+    pendingFileIdsRef.current = sharedFileIds;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [share?.shared_file_ids]);
+
+  const handleToggleShareAll = async () => {
+    try {
+      await updateShareConfig({ share_all_files: !shareAllFiles });
+    } catch {
+      setError(t('share.errorGeneric'));
+    }
+  };
+
+  const handleToggleFileShared = async (file) => {
+    const current = pendingFileIdsRef.current;
+    const next = current.includes(file.id) ? current.filter((id) => id !== file.id) : [...current, file.id];
+    pendingFileIdsRef.current = next;
+    try {
+      await updateShareConfig({ shared_file_ids: next });
+    } catch {
+      setError(t('share.errorGeneric'));
+    }
+  };
 
   const sceneNameByInstanceId = useMemo(() => {
     const map = {};
@@ -104,6 +135,13 @@ export default function FileManager() {
         </select>
       </div>
 
+      {share && (
+        <label className="file-manager__share-all">
+          <input type="checkbox" checked={shareAllFiles} onChange={handleToggleShareAll} />
+          {t('fileManager.shareAllLabel')}
+        </label>
+      )}
+
       {error && <p className="file-manager__error">{error}</p>}
 
       {filteredFiles.length === 0 ? (
@@ -116,6 +154,7 @@ export default function FileManager() {
               <th>{t('fileManager.columnScene')}</th>
               <th>{t('fileManager.columnType')}</th>
               <th>{t('fileManager.columnSize')}</th>
+              {share && <th>{t('fileManager.columnShared')}</th>}
               <th></th>
             </tr>
           </thead>
@@ -126,6 +165,17 @@ export default function FileManager() {
                 <td>{sceneNameByInstanceId[file.module_instance_id] || t('fileManager.unknownScene')}</td>
                 <td>{file.file_type === 'pdf' ? '📄' : '🖼️'} {file.file_type}</td>
                 <td>{formatBytes(file.size_bytes)}</td>
+                {share && (
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={shareAllFiles || sharedFileIds.includes(file.id)}
+                      disabled={shareAllFiles}
+                      onChange={() => handleToggleFileShared(file)}
+                      aria-label={t('fileManager.shareFileAria', { name: file.file_name })}
+                    />
+                  </td>
+                )}
                 <td className="file-manager__row-actions">
                   <button type="button" onClick={() => handleView(file)}>
                     {t('fileManager.viewButton')}

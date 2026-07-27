@@ -1,0 +1,62 @@
+.player-reference__empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.player-reference__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player-reference__card {
+  border-left: 3px solid var(--border);
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+}
+
+.player-reference__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.player-reference__avatar {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--surface-header);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+.player-reference__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-reference__name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.player-reference__stat {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.player-reference__notes {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}

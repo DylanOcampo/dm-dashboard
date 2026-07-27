@@ -8,6 +8,7 @@ import NPCManager from './components/NPCManager/NPCManager';
 import LootTableManager from './components/LootTableManager/LootTableManager';
 import Account from './components/Account/Account';
 import FileManager from './components/FileManager/FileManager';
+import ShareSettings from './components/ShareSettings/ShareSettings';
 import './App.css';
 
 function AppShell() {
@@ -39,6 +40,7 @@ function AppShell() {
         {activeView === 'npcs' && <NPCManager />}
         {activeView === 'lootTable' && <LootTableManager />}
         {activeView === 'fileManager' && <FileManager />}
+        {activeView === 'share' && <ShareSettings />}
         {activeView === 'account' && <Account />}
       </main>
     </div>

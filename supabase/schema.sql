@@ -227,3 +227,76 @@ create policy "Users can delete storage objects while subscribed"
 --   );
 --   $$
 -- );
+
+-- =====================================================================
+-- Compartir dashboard con jugadores (link, sin necesidad de cuenta)
+-- =====================================================================
+-- Independiente de la suscripción a propósito: un DM gratis también puede
+-- compartir (solo el envío automático de archivos reales y el combate en
+-- vivo están gateados por has_active_subscription, no esta tabla).
+-- shared_enemies/shared_npcs ya vienen filtrados a revealed=true cuando el
+-- cliente los escribe (ver src/hooks/useShareSync.js) — acá no se filtra de
+-- nuevo porque esta tabla es privada (solo el dueño hace select/insert/update);
+-- lo público pasa exclusivamente por get_shared_snapshot()/get_shared_files().
+create table if not exists public.dm_shares (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  share_token uuid not null unique default gen_random_uuid(),
+  enabled boolean not null default false,
+  shared_module_types text[] not null default '{}',
+  shared_players jsonb not null default '[]'::jsonb,
+  shared_enemies jsonb not null default '[]'::jsonb,
+  shared_npcs jsonb not null default '[]'::jsonb,
+  share_all_files boolean not null default true,
+  shared_file_ids uuid[] not null default '{}',
+  updated_at timestamptz not null default now()
+);
+
+alter table public.dm_shares enable row level security;
+
+create policy "DMs manage their own share config"
+  on public.dm_shares
+  for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- Único punto de acceso público (anon, sin login) a los datos compartidos.
+-- security definer: bypassa RLS de dm_shares, pero solo devuelve algo si el
+-- token matchea exactamente — el token (uuid random) es el único secreto.
+create or replace function public.get_shared_snapshot(token uuid)
+returns table (
+  share_token uuid,
+  enabled boolean,
+  shared_module_types text[],
+  shared_players jsonb,
+  shared_enemies jsonb,
+  shared_npcs jsonb
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select share_token, enabled, shared_module_types, shared_players, shared_enemies, shared_npcs
+  from public.dm_shares
+  where share_token = token and enabled = true;
+$$;
+
+grant execute on function public.get_shared_snapshot(uuid) to anon, authenticated;
+
+-- Fase 3 (archivos compartidos): join con user_files, mismo patrón de token.
+create or replace function public.get_shared_files(token uuid)
+returns setof public.user_files
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select f.*
+  from public.user_files f
+  join public.dm_shares s on s.user_id = f.user_id
+  where s.share_token = token
+    and s.enabled = true
+    and (s.share_all_files or f.id = any(s.shared_file_ids));
+$$;
+
+grant execute on function public.get_shared_files(uuid) to anon, authenticated;

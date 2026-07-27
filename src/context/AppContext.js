@@ -4,13 +4,19 @@ import { usePersistedState } from '../hooks/usePersistedState';
 import { useAuth } from '../hooks/useAuth';
 import { useSubscription } from '../hooks/useSubscription';
 import { useCloudFiles } from '../hooks/useCloudFiles';
+import { useShareSync } from '../hooks/useShareSync';
+import { useCombatBroadcast } from '../hooks/useCombatBroadcast';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 import { readLocal } from '../services/storageService';
 import { deleteAccountRemote } from '../services/stripeService';
 import { createDefaultLootTable } from '../data/defaultLootTable';
 import { translate, DEFAULT_LANGUAGE } from '../i18n/language';
 
-const AppContext = createContext(null);
+// Exportado (no solo AppProvider/useApp) para que PlayerSessionProvider
+// pueda renderizar <AppContext.Provider> con un value mínimo compatible y
+// así reusar los módulos "simples" (Time/Music/Notes/Dice/Soundboard/
+// Calculator) sin forkearlos — ver src/player/PlayerSessionContext.js.
+export const AppContext = createContext(null);
 
 const PLAYER_COLORS = ['#e63946', '#457b9d', '#2a9d8f', '#e9c46a', '#9d4edd', '#f4a261'];
 const ENEMY_COLORS = ['#6c757d', '#8d5524', '#a4243b', '#4a4e69', '#5f6b3f', '#5c3d2e'];
@@ -106,6 +112,11 @@ export function AppProvider({ children }) {
         name: t('players.defaultName', { n: prev.length + 1 }),
         level: 1,
         color: PLAYER_COLORS[prev.length % PLAYER_COLORS.length],
+        avatar: null,
+        class: '',
+        ac: 10,
+        hp: { current: 10, max: 10 },
+        customStats: [],
       },
     ]);
   }, [setPlayers, t]);
@@ -201,6 +212,8 @@ export function AppProvider({ children }) {
         id: uuid(),
         name: t('enemies.defaultName', { n: prev.length + 1 }),
         color: ENEMY_COLORS[prev.length % ENEMY_COLORS.length],
+        avatar: null,
+        revealed: false,
         ac: 10,
         hpMax: 10,
         speed: '9 m',
@@ -258,6 +271,8 @@ export function AppProvider({ children }) {
         id: uuid(),
         name: t('npcs.defaultName', { n: prev.length + 1 }),
         color: NPC_COLORS[prev.length % NPC_COLORS.length],
+        avatar: null,
+        revealed: false,
         isCombat: false,
         description: '',
         ac: 10,
@@ -303,6 +318,20 @@ export function AppProvider({ children }) {
     },
     [updateCombatants]
   );
+
+  // --- Compartir dashboard con jugadores (link, sin cuenta). Independiente
+  // de la suscripción — ver src/hooks/useShareSync.js. ---
+  const { share, shareLoading, refreshShare, updateShareConfig, regenerateShareToken, shareUrl } = useShareSync(
+    user.id,
+    { players, enemies, npcs }
+  );
+
+  useCombatBroadcast({
+    isPremium: user.isPremium,
+    shareEnabled: Boolean(share?.enabled),
+    shareToken: share?.share_token,
+    combats,
+  });
 
   // --- Tiradas de salvación contra la muerte: viven sobre cada combatiente
   // (jugador o NPC) dentro de "combats". Se resuelven automáticamente al
@@ -436,6 +465,12 @@ export function AppProvider({ children }) {
       cloudFiles,
       refreshCloudFiles,
       storageUsedBytes,
+      share,
+      shareLoading,
+      refreshShare,
+      updateShareConfig,
+      regenerateShareToken,
+      shareUrl,
       isSupabaseConfigured,
       syncOptions,
       players,
@@ -488,6 +523,12 @@ export function AppProvider({ children }) {
       cloudFiles,
       refreshCloudFiles,
       storageUsedBytes,
+      share,
+      shareLoading,
+      refreshShare,
+      updateShareConfig,
+      regenerateShareToken,
+      shareUrl,
       players,
       addPlayer,
       updatePlayer,
