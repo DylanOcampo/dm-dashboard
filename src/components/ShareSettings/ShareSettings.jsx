@@ -16,6 +16,7 @@ const SHAREABLE_MODULE_TYPES = [
   'saveThrows',
   'monsters',
   'npcs',
+  'playerReference',
 ];
 
 export default function ShareSettings() {

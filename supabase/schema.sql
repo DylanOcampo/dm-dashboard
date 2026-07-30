@@ -68,12 +68,20 @@ create table if not exists public.subscriptions (
     check (status in ('active', 'trialing', 'past_due', 'unpaid', 'canceled', 'incomplete', 'incomplete_expired', 'paused')),
   storage_limit_bytes bigint not null default 0,
   current_period_end timestamptz,
+  -- true entre que el usuario cancela la renovación (cancel-subscription) y
+  -- el período pagado termina de verdad: sigue siendo 'active'/premium
+  -- hasta current_period_end, pero no se va a renovar. Stripe lo vuelve a
+  -- false solo si el usuario reactiva desde el Billing Portal.
+  cancel_at_period_end boolean not null default false,
   -- Se setea la primera vez que el status deja de ser 'active'/'trialing';
   -- es el reloj de los 30 días para el borrado automático (ver
   -- cleanup-expired-files). Se limpia a null si vuelve a activarse.
   inactive_since timestamptz,
   updated_at timestamptz not null default now()
 );
+
+-- Por si esta tabla ya existía en tu base antes de agregar cancel_at_period_end.
+alter table public.subscriptions add column if not exists cancel_at_period_end boolean not null default false;
 
 alter table public.subscriptions enable row level security;
 

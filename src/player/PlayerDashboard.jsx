@@ -16,6 +16,7 @@ import PlayerHPView from './modules/PlayerHPView';
 import PlayerSaveThrowView from './modules/PlayerSaveThrowView';
 import PlayerMonsterReference from './modules/PlayerMonsterReference';
 import PlayerNPCReference from './modules/PlayerNPCReference';
+import PlayerCharacterReference from './modules/PlayerCharacterReference';
 import '../components/Dashboard/Dashboard.css';
 import './PlayerDashboard.css';
 
@@ -35,6 +36,7 @@ const PLAYER_MODULE_COMPONENTS = {
   saveThrows: PlayerSaveThrowView,
   monsters: PlayerMonsterReference,
   npcs: PlayerNPCReference,
+  playerReference: PlayerCharacterReference,
 };
 
 export default function PlayerDashboard() {

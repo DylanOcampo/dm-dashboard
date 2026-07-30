@@ -33,6 +33,8 @@ export default function ImageViewer({ instanceId }) {
     },
   });
 
+  
+
   const [activeId, setActiveId] = useState(null);
   const [objectUrl, setObjectUrl] = useState(null);
   const [needsPermission, setNeedsPermission] = useState(false);

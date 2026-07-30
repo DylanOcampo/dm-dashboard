@@ -26,3 +26,7 @@ export async function createPortalSession() {
 export async function deleteAccountRemote() {
   return invoke('delete-account', {});
 }
+
+export async function cancelSubscriptionRemote() {
+  return invoke('cancel-subscription', {});
+}

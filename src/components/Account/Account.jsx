@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { PLANS, formatBytes } from '../../data/plans';
-import { createPortalSession } from '../../services/stripeService';
+import { createPortalSession, cancelSubscriptionRemote } from '../../services/stripeService';
 import Pricing from '../Pricing/Pricing';
 import './Account.css';
 
@@ -28,6 +28,7 @@ export default function Account() {
     resetPassword,
     deleteAccount,
     subscription,
+    refreshSubscription,
     storageUsedBytes,
     isSupabaseConfigured,
     t,
@@ -41,6 +42,7 @@ export default function Account() {
   const [submitting, setSubmitting] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [cancelingRenewal, setCancelingRenewal] = useState(false);
 
   const deletionDate = useMemo(() => {
     if (!subscription?.inactive_since) return null;
@@ -91,6 +93,20 @@ export default function Account() {
     } catch (err) {
       setFormError(t('account.portalError'));
       setPortalLoading(false);
+    }
+  };
+
+  const handleCancelRenewal = async () => {
+    if (!window.confirm(t('account.cancelRenewalConfirm'))) return;
+    setCancelingRenewal(true);
+    setFormError('');
+    try {
+      await cancelSubscriptionRemote();
+      await refreshSubscription();
+    } catch (err) {
+      setFormError(t('account.cancelRenewalError'));
+    } finally {
+      setCancelingRenewal(false);
     }
   };
 
@@ -190,6 +206,16 @@ export default function Account() {
         </p>
       )}
 
+      {user.isPremium && subscription?.cancel_at_period_end && (
+        <p className="account__warning">
+          {subscription.current_period_end
+            ? t('account.cancelRenewalNoticeWithDate', {
+                date: new Date(subscription.current_period_end).toLocaleDateString(),
+              })
+            : t('account.cancelRenewalNotice')}
+        </p>
+      )}
+
       {user.isPremium && subscription && (
         <div className="account__usage">
           <div className="account__usage-bar">
@@ -215,6 +241,11 @@ export default function Account() {
         {user.isPremium && (
           <button type="button" onClick={handleManageSubscription} disabled={portalLoading}>
             {portalLoading ? t('account.redirecting') : t('account.manageSubscriptionButton')}
+          </button>
+        )}
+        {user.isPremium && !subscription?.cancel_at_period_end && (
+          <button type="button" onClick={handleCancelRenewal} disabled={cancelingRenewal}>
+            {cancelingRenewal ? t('account.canceling') : t('account.cancelRenewalButton')}
           </button>
         )}
         <button type="button" className="account__logout" onClick={signOut}>

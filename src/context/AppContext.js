@@ -46,6 +46,7 @@ const ALL_MODULE_IDS = [
   'hp',
   'monsters',
   'npcs',
+  'playerReference',
   'saveThrows',
   'calculator',
 ];

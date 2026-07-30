@@ -40,6 +40,7 @@ async function upsertFromSubscription(subscription: any, userIdHint?: string | n
       plan: planInfo?.plan ?? null,
       status: subscription.status,
       storage_limit_bytes: planInfo?.storageLimitBytes ?? 0,
+      cancel_at_period_end: Boolean(subscription.cancel_at_period_end),
       current_period_end: subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000).toISOString()
         : null,

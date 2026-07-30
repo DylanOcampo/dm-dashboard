@@ -15,6 +15,7 @@ import ConditionTracker from '../modules/ConditionTracker/ConditionTracker';
 import HPTracker from '../modules/HPTracker/HPTracker';
 import MonsterReference from '../modules/MonsterReference/MonsterReference';
 import NPCReference from '../modules/NPCReference/NPCReference';
+import PlayerReference from '../modules/PlayerReference/PlayerReference';
 import SaveThrowTracker from '../modules/SaveThrowTracker/SaveThrowTracker';
 import Calculator from '../modules/Calculator/Calculator';
 import './Dashboard.css';
@@ -35,6 +36,7 @@ const MODULE_COMPONENTS = {
   hp: HPTracker,
   monsters: MonsterReference,
   npcs: NPCReference,
+  playerReference: PlayerReference,
   saveThrows: SaveThrowTracker,
   calculator: Calculator,
 };
