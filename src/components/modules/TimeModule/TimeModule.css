@@ -13,18 +13,24 @@
 .time-module__tab {
   flex: 1;
   padding: 0.35rem 0.5rem;
-  border-radius: 6px;
+  border-radius: 2px;
   border: 1px solid var(--border);
   background: transparent;
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  background: var(--base-button);
+  color: var(--text-dark);
+  font-size: var(--base-text-size);
   cursor: pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
 }
 
 .time-module__tab.is-active {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-contrast);
+  box-shadow: 4px 6px 9px rgba(0, 0, 0, 0.253);
 }
 
 .time-module__display {
@@ -38,7 +44,7 @@
 }
 
 .time-module__value {
-  font-size: clamp(1.8rem, 12cqw, 3rem);
+  font-size: clamp(2.4rem, 18cqw, 5rem);
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -64,16 +70,24 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  width: 100%;
+  justify-content: center;
+  height: 2.5rem;
 }
 
 .time-module__controls button {
-  padding: 0.35rem 0.75rem;
+  padding: 1.55rem 1.75rem;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface-header);
   color: var(--text);
   cursor: pointer;
   font-size: 0.85rem;
+  height: 100%;
+  min-width: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .time-module__controls button:hover {

@@ -3,13 +3,26 @@ import { useApp } from '../../context/AppContext';
 import { useLinkedFiles } from '../../hooks/useLinkedFiles';
 import { usePlayerSession } from '../PlayerSessionContext';
 import { getSharedFiles, getSharedFileUrl } from '../../services/shareService';
-import '../../components/modules/ImageViewer/ImageViewer.css';
+import '../../components/modules/FileViewer/FileViewer.css';
 
-const IMAGE_PICKER_TYPES = [
-  { description: 'Imágenes', accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'] } },
+const FILE_PICKER_TYPES = [
+  {
+    description: 'PDF o imagen',
+    accept: {
+      'application/pdf': ['.pdf'],
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp'],
+    },
+  },
 ];
 
-export default function PlayerImageViewer({ instanceId }) {
+function resolveFileType(entry, moduleType) {
+  if (entry.fileType) return entry.fileType;
+  if (moduleType === 'image') return 'image';
+  if (moduleType === 'pdf') return 'pdf';
+  return /\.pdf$/i.test(entry.name) ? 'pdf' : 'image';
+}
+
+export default function PlayerFileViewer({ instanceId, moduleType }) {
   const { syncOptions, t } = useApp();
   const { token } = usePlayerSession();
   const [sharedFiles, setSharedFiles] = useState([]);
@@ -20,7 +33,7 @@ export default function PlayerImageViewer({ instanceId }) {
     setSharedLoading(true);
     getSharedFiles(token)
       .then((allFiles) => {
-        if (!cancelled) setSharedFiles(allFiles.filter((f) => f.file_type === 'image'));
+        if (!cancelled) setSharedFiles(allFiles);
       })
       .catch(() => {
         if (!cancelled) setSharedFiles([]);
@@ -34,10 +47,11 @@ export default function PlayerImageViewer({ instanceId }) {
   }, [token]);
 
   const { files, error, pickFiles, removeFile, resolveObjectUrl, fileInputRef, handleFileInputChange, isFileSystemAccessSupported } =
-    useLinkedFiles(`imageLinks:${instanceId}`, {
+    useLinkedFiles(storageKeyFor(moduleType, instanceId), {
       syncOptions,
-      pickerTypes: IMAGE_PICKER_TYPES,
+      pickerTypes: FILE_PICKER_TYPES,
       linkErrorMessage: t('fileViewer.linkErrorGeneric'),
+      unsupportedTypeMessage: t('fileViewer.unsupportedType'),
     });
 
   // activeId puede ser el id de un archivo compartido (tabla user_files) o
@@ -89,18 +103,23 @@ export default function PlayerImageViewer({ instanceId }) {
     };
   }, [activeId, activeIsShared, token, resolveObjectUrl]);
 
-  const activeName =
-    (activeIsShared ? sharedFiles.find((f) => f.id === activeId)?.file_name : files.find((f) => f.id === activeId)?.name) ??
-    t('fileViewer.emptyImage');
+  const activeSharedFile = activeIsShared ? sharedFiles.find((f) => f.id === activeId) : null;
+  const activeLocalFile = !activeIsShared ? files.find((f) => f.id === activeId) : null;
+  const activeName = activeSharedFile?.file_name ?? activeLocalFile?.name;
+  const activeType = activeSharedFile
+    ? activeSharedFile.file_type
+    : activeLocalFile
+      ? resolveFileType(activeLocalFile, moduleType)
+      : null;
 
   return (
-    <div className="image-viewer">
+    <div className="file-viewer">
       {sharedFiles.length > 0 && (
-        <div className="image-viewer__files">
+        <div className="file-viewer__files">
           {sharedFiles.map((f) => (
             <div
               key={f.id}
-              className={`image-viewer__file-chip ${activeIsShared && f.id === activeId ? 'is-active' : ''}`}
+              className={`file-viewer__file-chip ${activeIsShared && f.id === activeId ? 'is-active' : ''}`}
             >
               <button
                 type="button"
@@ -110,35 +129,35 @@ export default function PlayerImageViewer({ instanceId }) {
                 }}
                 title={f.file_name}
               >
-                ☁️ {f.file_name}
+                ☁️ {f.file_type === 'pdf' ? '📄' : '🖼️'} {f.file_name}
               </button>
             </div>
           ))}
         </div>
       )}
 
-      <div className="image-viewer__toolbar">
+      <div className="file-viewer__toolbar">
         <button type="button" onClick={pickFiles}>
-          {t('fileViewer.linkImageButton')}
+          {t('fileViewer.linkButton')}
         </button>
         <input
           type="file"
-          accept="image/*"
+          accept="application/pdf,image/*"
           multiple
           ref={fileInputRef}
-          className="image-viewer__hidden-input"
+          className="file-viewer__hidden-input"
           onChange={handleFileInputChange}
         />
-        {!isFileSystemAccessSupported && <span className="image-viewer__hint">{t('fileViewer.localCopyHint')}</span>}
+        {!isFileSystemAccessSupported && <span className="file-viewer__hint">{t('fileViewer.localCopyHint')}</span>}
       </div>
-      {error && <p className="image-viewer__error">{error}</p>}
+      {error && <p className="file-viewer__error">{error}</p>}
 
       {files.length > 0 && (
-        <div className="image-viewer__files">
+        <div className="file-viewer__files">
           {files.map((f) => (
             <div
               key={f.id}
-              className={`image-viewer__file-chip ${!activeIsShared && f.id === activeId ? 'is-active' : ''}`}
+              className={`file-viewer__file-chip ${!activeIsShared && f.id === activeId ? 'is-active' : ''}`}
             >
               <button
                 type="button"
@@ -148,11 +167,11 @@ export default function PlayerImageViewer({ instanceId }) {
                 }}
                 title={f.name}
               >
-                🖼️ {f.name}
+                {resolveFileType(f, moduleType) === 'pdf' ? '📄' : '🖼️'} {f.name}
               </button>
               <button
                 type="button"
-                className="image-viewer__file-remove"
+                className="file-viewer__file-remove"
                 onClick={() => removeFile(f.id)}
                 aria-label={t('fileViewer.removeFileAria', { name: f.name })}
               >
@@ -163,12 +182,21 @@ export default function PlayerImageViewer({ instanceId }) {
         </div>
       )}
 
-      <div className="image-viewer__content">
-        {files.length === 0 && sharedFiles.length === 0 && (
-          <p className="image-viewer__empty">{t('fileViewer.emptyImage')}</p>
+      <div className="file-viewer__content">
+        {files.length === 0 && sharedFiles.length === 0 && <p className="file-viewer__empty">{t('fileViewer.empty')}</p>}
+        {objectUrl && activeType === 'pdf' && (
+          <embed src={objectUrl} type="application/pdf" className="file-viewer__embed" title="PDF" />
         )}
-        {objectUrl && <img src={objectUrl} alt={activeName} className="image-viewer__image" />}
+        {objectUrl && activeType === 'image' && (
+          <img src={objectUrl} alt={activeName} className="file-viewer__image" />
+        )}
       </div>
     </div>
   );
+}
+
+function storageKeyFor(moduleType, instanceId) {
+  if (moduleType === 'image') return `imageLinks:${instanceId}`;
+  if (moduleType === 'pdf') return `pdfLinks:${instanceId}`;
+  return `fileLinks:${instanceId}`;
 }

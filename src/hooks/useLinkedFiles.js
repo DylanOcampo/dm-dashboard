@@ -7,6 +7,17 @@ import { uploadUserFile, deleteUserFile, getSignedUrl } from '../services/fileSt
 export const isFileSystemAccessSupported =
   typeof window !== 'undefined' && typeof window.showOpenFilePicker === 'function';
 
+const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp|svg|bmp)$/i;
+
+// El módulo combinado (FileViewer) solo soporta PDFs e imágenes — el tipo se
+// detecta por archivo (MIME, con fallback a la extensión) en vez de venir
+// fijo por instancia, así una misma lista puede tener de ambos.
+function detectFileType(file) {
+  if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) return 'pdf';
+  if (file.type.startsWith('image/') || IMAGE_EXTENSIONS.test(file.name)) return 'image';
+  return null;
+}
+
 /**
  * Vincula archivos locales del usuario (PDFs, imágenes). Sin suscripción
  * activa se comporta como siempre: en navegadores con File System Access API
@@ -20,7 +31,7 @@ export const isFileSystemAccessSupported =
  * siendo visibles (solo lectura) pero no se pueden borrar desde acá — ver
  * `cloud.enabled` en `removeFile`.
  */
-export function useLinkedFiles(storageKey, { syncOptions, pickerTypes, linkErrorMessage, cloud } = {}) {
+export function useLinkedFiles(storageKey, { syncOptions, pickerTypes, linkErrorMessage, unsupportedTypeMessage, cloud } = {}) {
   const [files, setFiles] = usePersistedState(storageKey, [], syncOptions);
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
@@ -28,32 +39,49 @@ export function useLinkedFiles(storageKey, { syncOptions, pickerTypes, linkError
   const addFromHandles = useCallback(
     async (handles) => {
       const newEntries = [];
+      let hadUnsupported = false;
       for (const handle of handles) {
+        // eslint-disable-next-line no-await-in-loop
+        const file = await handle.getFile();
+        const fileType = detectFileType(file);
+        if (!fileType) {
+          hadUnsupported = true;
+          continue;
+        }
         const id = uuid();
         // eslint-disable-next-line no-await-in-loop
         await saveFileEntry(id, { kind: 'handle', handle });
-        newEntries.push({ id, name: handle.name, kind: 'handle' });
+        newEntries.push({ id, name: handle.name, kind: 'handle', fileType });
       }
-      setFiles((prev) => [...prev, ...newEntries]);
+      if (hadUnsupported) {
+        setError(unsupportedTypeMessage || 'Solo se pueden vincular PDFs o imágenes.');
+      }
+      if (newEntries.length > 0) setFiles((prev) => [...prev, ...newEntries]);
       return newEntries;
     },
-    [setFiles]
+    [setFiles, unsupportedTypeMessage]
   );
 
   const addFromFileList = useCallback(
     async (fileList) => {
       const newEntries = [];
+      let hadUnsupported = false;
       for (const file of Array.from(fileList)) {
+        const fileType = detectFileType(file);
+        if (!fileType) {
+          hadUnsupported = true;
+          continue;
+        }
         if (cloud?.enabled) {
           try {
             // eslint-disable-next-line no-await-in-loop
             const row = await uploadUserFile({
               userId: cloud.userId,
               moduleInstanceId: cloud.moduleInstanceId,
-              fileType: cloud.fileType,
+              fileType,
               file,
             });
-            newEntries.push({ id: row.id, name: row.file_name, kind: 'cloud', storagePath: row.storage_path });
+            newEntries.push({ id: row.id, name: row.file_name, kind: 'cloud', storagePath: row.storage_path, fileType });
           } catch (err) {
             setError(err.message?.includes('quota') || err.message?.includes('Storage quota')
               ? cloud.quotaExceededMessage || 'Superaste tu límite de almacenamiento.'
@@ -63,8 +91,11 @@ export function useLinkedFiles(storageKey, { syncOptions, pickerTypes, linkError
           const id = uuid();
           // eslint-disable-next-line no-await-in-loop
           await saveFileEntry(id, { kind: 'blob', blob: file });
-          newEntries.push({ id, name: file.name, kind: 'blob' });
+          newEntries.push({ id, name: file.name, kind: 'blob', fileType });
         }
+      }
+      if (hadUnsupported) {
+        setError(unsupportedTypeMessage || 'Solo se pueden vincular PDFs o imágenes.');
       }
       if (newEntries.length > 0) {
         setFiles((prev) => [...prev, ...newEntries]);
@@ -72,7 +103,7 @@ export function useLinkedFiles(storageKey, { syncOptions, pickerTypes, linkError
       }
       return newEntries;
     },
-    [setFiles, cloud, linkErrorMessage]
+    [setFiles, cloud, linkErrorMessage, unsupportedTypeMessage]
   );
 
   const pickFiles = useCallback(async () => {

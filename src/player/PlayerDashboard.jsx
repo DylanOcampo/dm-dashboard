@@ -9,8 +9,7 @@ import NotesModule from '../components/modules/NotesModule/NotesModule';
 import DiceRoller from '../components/modules/DiceRoller/DiceRoller';
 import Soundboard from '../components/modules/Soundboard/Soundboard';
 import Calculator from '../components/modules/Calculator/Calculator';
-import PlayerPDFViewer from './modules/PlayerPDFViewer';
-import PlayerImageViewer from './modules/PlayerImageViewer';
+import PlayerFileViewer from './modules/PlayerFileViewer';
 import PlayerInitiativeView from './modules/PlayerInitiativeView';
 import PlayerHPView from './modules/PlayerHPView';
 import PlayerSaveThrowView from './modules/PlayerSaveThrowView';
@@ -29,8 +28,9 @@ const PLAYER_MODULE_COMPONENTS = {
   dice: DiceRoller,
   soundboard: Soundboard,
   calculator: Calculator,
-  pdf: PlayerPDFViewer,
-  image: PlayerImageViewer,
+  files: PlayerFileViewer,
+  pdf: PlayerFileViewer,
+  image: PlayerFileViewer,
   initiative: PlayerInitiativeView,
   hp: PlayerHPView,
   saveThrows: PlayerSaveThrowView,
@@ -151,7 +151,7 @@ export default function PlayerDashboard() {
                 </button>
               </div>
               <div className="widget__body">
-                <ModuleComponent instanceId={item.i} />
+                <ModuleComponent instanceId={item.i} moduleType={item.type} />
               </div>
             </div>
           );

@@ -9,8 +9,7 @@ import LootGenerator from '../modules/LootGenerator/LootGenerator';
 import NotesModule from '../modules/NotesModule/NotesModule';
 import DiceRoller from '../modules/DiceRoller/DiceRoller';
 import Soundboard from '../modules/Soundboard/Soundboard';
-import PDFViewer from '../modules/PDFViewer/PDFViewer';
-import ImageViewer from '../modules/ImageViewer/ImageViewer';
+import FileViewer from '../modules/FileViewer/FileViewer';
 import ConditionTracker from '../modules/ConditionTracker/ConditionTracker';
 import HPTracker from '../modules/HPTracker/HPTracker';
 import MonsterReference from '../modules/MonsterReference/MonsterReference';
@@ -30,8 +29,12 @@ const MODULE_COMPONENTS = {
   notes: NotesModule,
   dice: DiceRoller,
   soundboard: Soundboard,
-  pdf: PDFViewer,
-  image: ImageViewer,
+  // 'pdf'/'image' son los tipos legado de antes de unificar los visores en
+  // un solo módulo — se mantienen mapeados al mismo componente para que las
+  // instancias ya guardadas en dashboards existentes no desaparezcan.
+  files: FileViewer,
+  pdf: FileViewer,
+  image: FileViewer,
   condition: ConditionTracker,
   hp: HPTracker,
   monsters: MonsterReference,
@@ -164,7 +167,7 @@ export default function Dashboard() {
                 </button>
               </div>
               <div className="widget__body">
-                <ModuleComponent instanceId={item.i} />
+                <ModuleComponent instanceId={item.i} moduleType={moduleType} />
               </div>
             </div>
           );

@@ -3,8 +3,11 @@ import { v4 as uuid } from 'uuid';
 import { AppContext } from '../context/AppContext';
 import { getSharedSnapshot } from '../services/shareService';
 import { readLocal, writeLocal } from '../services/storageService';
+import { usePersistedState } from '../hooks/usePersistedState';
 import { translate, DEFAULT_LANGUAGE } from '../i18n/language';
 import { supabase, isSupabaseConfigured } from '../services/supabaseClient';
+
+const LOCAL_ONLY_SYNC = { syncEnabled: false, userId: null };
 
 const PlayerSessionContext = createContext(null);
 
@@ -67,6 +70,34 @@ export function PlayerSessionProvider({ token, children }) {
   }, [liveCombats]);
 
   const t = useCallback((key, vars) => translate(language, key, vars), [language]);
+
+  // Notas del jugador: 100% locales a su navegador (nunca se sincronizan
+  // con el DM ni con otros jugadores), separadas por token para no
+  // pisarse con la biblioteca de notas del propio DM si comparten navegador.
+  const [notesLibrary, setNotesLibrary] = usePersistedState(`notesLibrary:${token}`, [], LOCAL_ONLY_SYNC);
+
+  const addNote = useCallback(() => {
+    const id = uuid();
+    setNotesLibrary((prev) => [
+      ...prev,
+      { id, title: translate(language, 'notes.defaultTitle', { n: prev.length + 1 }), content: '', color: null },
+    ]);
+    return id;
+  }, [setNotesLibrary, language]);
+
+  const updateNote = useCallback(
+    (id, changes) => {
+      setNotesLibrary((prev) => prev.map((n) => (n.id === id ? { ...n, ...changes } : n)));
+    },
+    [setNotesLibrary]
+  );
+
+  const removeNote = useCallback(
+    (id) => {
+      setNotesLibrary((prev) => prev.filter((n) => n.id !== id));
+    },
+    [setNotesLibrary]
+  );
 
   const setLanguage = useCallback(
     (lang) => {
@@ -163,8 +194,8 @@ export function PlayerSessionProvider({ token, children }) {
   );
 
   const compatValue = useMemo(
-    () => ({ t, language, setLanguage, syncOptions: { syncEnabled: false, userId: null } }),
-    [t, language, setLanguage]
+    () => ({ t, language, setLanguage, syncOptions: LOCAL_ONLY_SYNC, notesLibrary, addNote, updateNote, removeNote }),
+    [t, language, setLanguage, notesLibrary, addNote, updateNote, removeNote]
   );
 
   const value = useMemo(

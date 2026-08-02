@@ -40,8 +40,7 @@ const ALL_MODULE_IDS = [
   'notes',
   'dice',
   'soundboard',
-  'pdf',
-  'image',
+  'files',
   'condition',
   'hp',
   'monsters',
@@ -138,6 +137,35 @@ export function AppProvider({ children }) {
 
   // --- Loot table (compartida entre todas las copias de módulos) ---
   const [lootTable, setLootTable] = usePersistedState('lootTable', createDefaultLootTable, syncOptions);
+
+  // --- Biblioteca de notas: compartida entre todas las copias del módulo de
+  // Notas (antes cada instancia tenía su propia lista). Cada instancia solo
+  // recuerda qué nota tiene abierta (`notesOpen:<instanceId>`, ver
+  // NotesModule.jsx), no una copia de los datos. ---
+  const [notesLibrary, setNotesLibrary] = usePersistedState('notesLibrary', [], syncOptions);
+
+  const addNote = useCallback(() => {
+    const id = uuid();
+    setNotesLibrary((prev) => [
+      ...prev,
+      { id, title: t('notes.defaultTitle', { n: prev.length + 1 }), content: '', color: null },
+    ]);
+    return id;
+  }, [setNotesLibrary, t]);
+
+  const updateNote = useCallback(
+    (id, changes) => {
+      setNotesLibrary((prev) => prev.map((n) => (n.id === id ? { ...n, ...changes } : n)));
+    },
+    [setNotesLibrary]
+  );
+
+  const removeNote = useCallback(
+    (id) => {
+      setNotesLibrary((prev) => prev.filter((n) => n.id !== id));
+    },
+    [setNotesLibrary]
+  );
 
   // --- Combates: uno por cada instancia de Tracker de Iniciativa, compartido
   // en vivo con cualquier Condition Tracker que se vincule a esa instancia. ---
@@ -480,6 +508,10 @@ export function AppProvider({ children }) {
       removePlayer,
       lootTable,
       setLootTable,
+      notesLibrary,
+      addNote,
+      updateNote,
+      removeNote,
       getCombat,
       updateCombatants,
       nextTurn,
@@ -540,6 +572,10 @@ export function AppProvider({ children }) {
       setCombatTurnIndex,
       lootTable,
       setLootTable,
+      notesLibrary,
+      addNote,
+      updateNote,
+      removeNote,
       enemies,
       addEnemy,
       updateEnemy,
