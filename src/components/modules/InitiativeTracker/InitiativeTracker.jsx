@@ -46,6 +46,7 @@ export default function InitiativeTracker({ instanceId }) {
         conditions: [],
         hp: { current: player.hp?.max ?? 10, max: player.hp?.max ?? 10 },
         ac: player.ac,
+        image: player.avatar,
       },
     ]);
     setSelectedPlayerId('');
@@ -87,7 +88,15 @@ export default function InitiativeTracker({ instanceId }) {
     const reordered = Array.from(combatants);
     const [moved] = reordered.splice(result.source.index, 1);
     reordered.splice(result.destination.index, 0, moved);
-    updateThisCombat(() => reordered);
+
+    // Reasigna los valores de iniciativa (de mayor a menor) a la nueva
+    // posición de cada quien, preservando el mismo conjunto de números que
+    // ya había — así arrastrar para ordenar reemplaza tener que tipear el
+    // número a mano, y el valor mostrado siempre coincide con el orden.
+    const sortedValues = combatants.map((c) => c.initiative).sort((a, b) => b - a);
+    const renumbered = reordered.map((c, idx) => ({ ...c, initiative: sortedValues[idx] }));
+
+    updateThisCombat(() => renumbered);
   };
 
   const availablePlayers = players.filter((p) => !combatants.some((c) => c.playerId === p.id));

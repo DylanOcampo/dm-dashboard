@@ -100,8 +100,8 @@
   padding: 0.35rem 0.6rem;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
+  background: var(--base-button);
+  color: var(--text-dark) ;
   font-size: 0.85rem;
 }
 
@@ -128,7 +128,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: linear-gradient(#2F2B28, #694020);
+  background: linear-gradient(#2F2B28, #4d2e17);
   
   border-radius: 4px;
   overflow: hidden;
@@ -157,17 +157,30 @@
   cursor: grabbing;
 }
 
-.widget__close {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
+.widget__close-container{
+  background: url(../../assets/General/Exit.png) no-repeat center center;
+  background-size: cover;
+
+  min-width: 123px;
+  min-height: 27px;
+
 }
 
+.widget__close {
+  position: absolute;
+  right: 27px;
+  margin-top: 1.5px;
+  min-width: 22px;
+  min-height: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.widget__close:hover {
+  background: rgba(114, 2, 2, 0.753);
+  border-radius: 50%;
+}
 
 
 .widget__body {

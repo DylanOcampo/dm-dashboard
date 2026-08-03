@@ -157,14 +157,16 @@ export default function Dashboard() {
             <div key={item.i} className="widget">
               <div className="widget__header">
                 <span>{moduleTitle}</span>
-                <button
+                <div className="widget__close-container"> 
+                  <button
                   type="button"
                   className="widget__close"
                   onClick={() => removeModuleInstance(item.i)}
                   aria-label={t('dashboard.removeModuleAria', { name: moduleTitle })}
                 >
-                  ×
+                  
                 </button>
+                </div>
               </div>
               <div className="widget__body">
                 <ModuleComponent instanceId={item.i} moduleType={moduleType} />

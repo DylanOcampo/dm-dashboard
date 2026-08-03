@@ -280,6 +280,7 @@ export function AppProvider({ children }) {
           conditions: [],
           hp: { current: enemy.hpMax || 10, max: enemy.hpMax || 10 },
           ac: enemy.ac,
+          image: enemy.avatar,
           notes: [enemy.attacks, enemy.notes].filter(Boolean).join(' — '),
         },
       ]);
@@ -341,6 +342,7 @@ export function AppProvider({ children }) {
           conditions: [],
           hp: { current: npc.hpMax || 10, max: npc.hpMax || 10 },
           ac: npc.ac,
+          image: npc.avatar,
           notes: [npc.attacks, npc.description].filter(Boolean).join(' — '),
         },
       ]);

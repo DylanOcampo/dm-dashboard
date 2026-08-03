@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useApp } from '../../../context/AppContext';
 import { usePersistedState } from '../../../hooks/usePersistedState';
-import { extractYouTubeId, loadYouTubeIframeApi } from '../../../services/youtube';
+import { extractYouTubeId, fetchYouTubeTitle, loadYouTubeIframeApi } from '../../../services/youtube';
+import VolumeControl from '../../common/VolumeControl/VolumeControl';
 import './MusicModule.css';
 
 const VIDEO_MIN_WIDTH = 260;
@@ -11,6 +12,7 @@ const VIDEO_MIN_HEIGHT = 220;
 export default function MusicModule({ instanceId }) {
   const { syncOptions, t } = useApp();
   const [musicPlaylist, setMusicPlaylist] = usePersistedState(`musicPlaylist:${instanceId}`, [], syncOptions);
+  const [volume, setVolume] = usePersistedState(`musicVolume:${instanceId}`, 100, syncOptions);
   const [urlInput, setUrlInput] = useState('');
   const [error, setError] = useState('');
   const [activeTrackId, setActiveTrackId] = useState(null);
@@ -21,6 +23,12 @@ export default function MusicModule({ instanceId }) {
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
   const pendingVideoIdRef = useRef(null);
+  const volumeRef = useRef(volume);
+
+  useEffect(() => {
+    volumeRef.current = volume;
+    playerRef.current?.setVolume?.(volume);
+  }, [volume]);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,6 +39,7 @@ export default function MusicModule({ instanceId }) {
         width: '100%',
         events: {
           onReady: () => {
+            playerRef.current.setVolume(volumeRef.current);
             if (pendingVideoIdRef.current) {
               playerRef.current.loadVideoById(pendingVideoIdRef.current);
               pendingVideoIdRef.current = null;
@@ -61,10 +70,26 @@ export default function MusicModule({ instanceId }) {
     return () => observer.disconnect();
   }, []);
 
+  // Completa el título real de las canciones que ya estaban en la lista sin
+  // uno (agregadas antes de que existiera esto, o si oEmbed falló en su
+  // momento) — solo al montar, para no reintentar en cada render.
+  useEffect(() => {
+    musicPlaylist
+      .filter((track) => track.title === track.url)
+      .forEach((track) => {
+        fetchYouTubeTitle(track.videoId).then((title) => {
+          if (!title) return;
+          setMusicPlaylist((prev) => prev.map((t) => (t.id === track.id ? { ...t, title } : t)));
+        });
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const playTrack = useCallback((track) => {
     setActiveTrackId(track.id);
     if (playerRef.current && typeof playerRef.current.loadVideoById === 'function') {
       playerRef.current.loadVideoById(track.videoId);
+      playerRef.current.setVolume(volumeRef.current);
     } else {
       pendingVideoIdRef.current = track.videoId;
     }
@@ -98,9 +123,17 @@ export default function MusicModule({ instanceId }) {
       setError(t('music.errorInvalidUrl'));
       return;
     }
-    setMusicPlaylist((prev) => [...prev, { id: uuid(), videoId, url: trimmed, title: trimmed }]);
+    const id = uuid();
+    setMusicPlaylist((prev) => [...prev, { id, videoId, url: trimmed, title: trimmed }]);
     setUrlInput('');
     setError('');
+
+    // El título real llega asíncrono (oEmbed) — mientras tanto se ve el link,
+    // así el agregado no se siente trabado esperando la red.
+    fetchYouTubeTitle(videoId).then((title) => {
+      if (!title) return;
+      setMusicPlaylist((prev) => prev.map((t) => (t.id === id ? { ...t, title } : t)));
+    });
   };
 
   return (
@@ -115,6 +148,15 @@ export default function MusicModule({ instanceId }) {
         <button type="submit">{t('music.addButton')}</button>
       </form>
       {error && <p className="music-module__error">{error}</p>}
+
+      <div className="music-module__controls">
+        <VolumeControl
+          volume={volume}
+          onChange={setVolume}
+          label={t('volumeControl.toggleAria')}
+          sliderLabel={t('volumeControl.sliderAria')}
+        />
+      </div>
 
       <div className={`music-module__player ${showVideo ? '' : 'music-module__player--collapsed'}`}>
         <div ref={playerContainerRef} className="music-module__iframe-target" />

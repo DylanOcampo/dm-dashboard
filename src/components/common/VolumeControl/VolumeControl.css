@@ -1,0 +1,44 @@
+.volume-control {
+  position: relative;
+  display: inline-flex;
+}
+
+.volume-control__toggle {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-header);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.volume-control__toggle:hover {
+  border-color: var(--accent);
+}
+
+.volume-control__popover {
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  right: 0;
+  z-index: 5;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.volume-control__popover input[type='range'] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 1.4rem;
+  height: 5.5rem;
+  cursor: pointer;
+  accent-color: var(--accent);
+}

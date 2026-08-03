@@ -3,11 +3,13 @@ import { v4 as uuid } from 'uuid';
 import { useApp } from '../../../context/AppContext';
 import { usePersistedState } from '../../../hooks/usePersistedState';
 import { extractYouTubeId, loadYouTubeIframeApi } from '../../../services/youtube';
+import VolumeControl from '../../common/VolumeControl/VolumeControl';
 import './Soundboard.css';
 
 export default function Soundboard({ instanceId }) {
   const { syncOptions, t } = useApp();
   const [clips, setClips] = usePersistedState(`soundboard:${instanceId}`, [], syncOptions);
+  const [volume, setVolume] = usePersistedState(`soundboardVolume:${instanceId}`, 100, syncOptions);
 
   const [urlInput, setUrlInput] = useState('');
   const [startInput, setStartInput] = useState(0);
@@ -23,6 +25,12 @@ export default function Soundboard({ instanceId }) {
   const pendingClipRef = useRef(null);
   const activeEndRef = useRef(null);
   const watchIntervalRef = useRef(null);
+  const volumeRef = useRef(volume);
+
+  useEffect(() => {
+    volumeRef.current = volume;
+    playerRef.current?.setVolume?.(volume);
+  }, [volume]);
 
   const stopWatching = () => {
     if (watchIntervalRef.current) {
@@ -40,6 +48,7 @@ export default function Soundboard({ instanceId }) {
         width: '1',
         events: {
           onReady: () => {
+            playerRef.current.setVolume(volumeRef.current);
             if (pendingClipRef.current) {
               const clip = pendingClipRef.current;
               pendingClipRef.current = null;
@@ -78,6 +87,7 @@ export default function Soundboard({ instanceId }) {
     activeEndRef.current = clip.end;
     if (playerRef.current && typeof playerRef.current.loadVideoById === 'function') {
       playerRef.current.loadVideoById({ videoId: clip.videoId, startSeconds: clip.start });
+      playerRef.current.setVolume(volumeRef.current);
     } else {
       pendingClipRef.current = clip;
     }
@@ -147,6 +157,15 @@ export default function Soundboard({ instanceId }) {
         <button type="submit">{t('soundboard.addClipButton')}</button>
       </form>
       {error && <p className="soundboard__error">{error}</p>}
+
+      <div className="soundboard__controls">
+        <VolumeControl
+          volume={volume}
+          onChange={setVolume}
+          label={t('volumeControl.toggleAria')}
+          sliderLabel={t('volumeControl.sliderAria')}
+        />
+      </div>
 
       <div className="soundboard__hidden-player">
         <div ref={playerContainerRef} />

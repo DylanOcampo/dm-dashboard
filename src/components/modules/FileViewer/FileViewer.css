@@ -16,8 +16,8 @@
   padding: 0.35rem 0.6rem;
   border-radius: 6px;
   border: none;
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--base-button);
+  color: var(--text-dark);
   cursor: pointer;
   font-size: 0.85rem;
 }
@@ -48,14 +48,14 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  background: var(--surface-header);
-  border: 1px solid var(--border);
+  background: var(--accent);
+  border: 2px solid var(--border);
   border-radius: 999px;
   padding: 0.2rem 0.3rem 0.2rem 0.6rem;
 }
 
 .file-viewer__file-chip.is-active {
-  border-color: var(--accent);
+  border-color: white;
 }
 
 .file-viewer__file-chip button:first-child {

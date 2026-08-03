@@ -15,6 +15,23 @@ export function extractYouTubeId(url) {
   }
 }
 
+// oEmbed es un endpoint público de YouTube (sin API key, con CORS abierto)
+// que devuelve el título real del video — evita tener que dar de alta una
+// API key de YouTube Data v3 solo para esto.
+export async function fetchYouTubeTitle(videoId) {
+  try {
+    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(
+      `https://www.youtube.com/watch?v=${videoId}`
+    )}&format=json`;
+    const res = await fetch(oembedUrl);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.title || null;
+  } catch {
+    return null;
+  }
+}
+
 let apiPromise = null;
 
 export function loadYouTubeIframeApi() {

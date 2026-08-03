@@ -2,11 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../../../context/AppContext';
 import './TimeModule.css';
 
-const LOCALE_BY_LANGUAGE = { es: 'es-ES', en: 'en-US' };
-
-function formatClock(date, locale) {
-  return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-}
 
 function formatDuration(totalMs) {
   const totalSeconds = Math.max(0, Math.floor(totalMs / 1000));
@@ -17,20 +12,40 @@ function formatDuration(totalMs) {
   return hours > 0 ? `${pad(hours)}:${pad(minutes)}:${pad(seconds)}` : `${pad(minutes)}:${pad(seconds)}`;
 }
 
-function ClockView({ locale }) {
-  const [now, setNow] = useState(() => new Date());
+function ClockView({ t }) {
+ const [isRunning, setIsRunning] = useState(false);
+  const [elapsedMs, setElapsedMs] = useState(0);
+  const startedAtRef = useRef(null);
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
+    if (!isRunning) return undefined;
+    const id = setInterval(() => {
+      setElapsedMs(Date.now() - startedAtRef.current);
+    }, 250);
     return () => clearInterval(id);
-  }, []);
+  }, [isRunning]);
+
+  const start = () => {
+    startedAtRef.current = Date.now() - elapsedMs;
+    setIsRunning(true);
+  };
+  const pause = () => setIsRunning(false);
+  const reset = () => {
+    setIsRunning(false);
+    setElapsedMs(0);
+  };
 
   return (
     <div className="time-module__display">
-      <span className="time-module__value">{formatClock(now, locale)}</span>
-      <span className="time-module__caption">
-        {now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}
-      </span>
+      <span className="time-module__value">{formatDuration(elapsedMs)}</span>
+      <div className="time-module__controls">
+        {!isRunning ? (
+          <button type="button" onClick={start}>{t('time.start')}</button>
+        ) : (
+          <button type="button" onClick={pause}>{t('time.pause')}</button>
+        )}
+        <button type="button" onClick={reset}>{t('time.reset')}</button>
+      </div>
     </div>
   );
 }
@@ -139,8 +154,8 @@ function TimerView({ t }) {
 }
 
 export default function TimeModule() {
-  const { t, language } = useApp();
-  const locale = LOCALE_BY_LANGUAGE[language] ?? undefined;
+  const { t } = useApp();
+
   const [activeTab, setActiveTab] = useState('clock');
 
   const TABS = [
@@ -148,8 +163,6 @@ export default function TimeModule() {
     { id: 'stopwatch', label: t('time.tabStopwatch'), Component: StopwatchView },
     { id: 'timer', label: t('time.tabTimer'), Component: TimerView },
   ];
-
-  const ActiveComponent = TABS.find((tab) => tab.id === activeTab)?.Component ?? ClockView;
 
   return (
     <div className="time-module">
@@ -165,7 +178,11 @@ export default function TimeModule() {
           </button>
         ))}
       </div>
-      <ActiveComponent key={activeTab} t={t} locale={locale} />
+      {TABS.map(({ id, Component }) => (
+        <div key={id} hidden={id !== activeTab}>
+          <Component t={t} />
+        </div>
+      ))}
     </div>
   );
 }

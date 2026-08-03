@@ -61,6 +61,11 @@
   margin: 0;
 }
 
+.soundboard__controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .soundboard__hidden-player {
   position: absolute;
   width: 1px;

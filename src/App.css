@@ -2,8 +2,13 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  
 }
 
 .app-shell__content {
   flex: 1;
+  background: url('assets/General/Bg.png') ;
+  background-size: cover;
+  opacity: 1;
+  background-color: #000000;
 }

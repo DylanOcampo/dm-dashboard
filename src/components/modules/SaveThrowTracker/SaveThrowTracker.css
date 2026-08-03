@@ -51,29 +51,38 @@
 
 .save-throw-tracker__row {
   border-left: 4px solid var(--border);
-  background: var(--surface-header);
+  background: var(--base-button);
   border-radius: 6px;
   padding: 0.5rem 0.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  min-width: 454px;
 }
 
 .save-throw-tracker__name {
   font-weight: 600;
   font-size: 0.88rem;
+  color: var(--text-dark);
+}
+
+.save-throw-tracker__save-btn-image{
+  width: 80px;
+  height: auto;
 }
 
 .save-throw-tracker__saves {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+
 }
 
 .save-throw-tracker__save-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+
+  justify-content: space-between;
 }
 
 .save-throw-tracker__save-label {
@@ -82,7 +91,7 @@
   flex-shrink: 0;
 }
 
-.save-throw-tracker__save-label.is-success {
+.save-throw-tracker__save.is-success {
   color: #4caf50;
 }
 
@@ -95,39 +104,104 @@
   gap: 0.25rem;
 }
 
+.save-throw-tracker__pip-container {
+  
+  overflow: visible;
+}
+
 .save-throw-tracker__pip {
-  width: 0.7rem;
-  height: 0.7rem;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg);
+  position: relative;
+  right: 55px;
+  top: 16px;
+  scale: 0;
+  
 }
 
 .save-throw-tracker__save-row:has(.is-success) .save-throw-tracker__pip.is-filled {
-  background: #4caf50;
-  border-color: #4caf50;
+  scale: 1;
+  background: var(--success);
+  border-color: var(--success);
 }
 
 .save-throw-tracker__save-row:has(.is-failure) .save-throw-tracker__pip.is-filled {
+  scale: 1;
   background: var(--danger);
   border-color: var(--danger);
 }
 
-.save-throw-tracker__save-btn {
-  margin-left: auto;
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
+.save-throw-tracker__save-btn-is-success {
+
+  padding: 10px;
+  border-radius: 2px;
+  width: 92px;
   border: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--success);
   color: var(--text);
   cursor: pointer;
-  font-size: 0.72rem;
+  font-size: 16px;
   white-space: nowrap;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
 }
 
-.save-throw-tracker__save-btn.is-success:hover {
+.save-throw-tracker__save-btn-is-success:hover {
   border-color: #4caf50;
   color: #4caf50;
+}
+
+.save-throw-tracker__save-btn-is-failure {
+
+  width: 92px;
+  padding: 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--danger);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 16px;
+  white-space: nowrap;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+
+.save-throw-tracker__save-btn-is-failure:hover {
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.save-throw-tracker__combatant-image{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.save-throw-tracker__combatant-image-placeholder{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.save-throw-tracker__combatant-image-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .save-throw-tracker__save-btn.is-failure:hover {

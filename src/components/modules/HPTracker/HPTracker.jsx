@@ -98,6 +98,13 @@ export default function HPTracker({ instanceId }) {
           return (
             <li key={combatant.id} className="hp-tracker__row" style={{ borderLeftColor: combatant.color }}>
               <div className="hp-tracker__row-header">
+                {combatant.image ? (
+                  <img src={combatant.image} alt={combatant.name} className="hp-tracker__combatant-image" />
+                ) : (
+                  <div className="hp-tracker__combatant-image-placeholder" style={{ background: combatant.color }}>
+                    {combatant.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <span className="hp-tracker__name">{combatant.name}</span>
                 <span className={`hp-tracker__value ${isDown ? 'is-down' : ''}`}>
                   {hp.current} / {hp.max}
@@ -111,12 +118,16 @@ export default function HPTracker({ instanceId }) {
                   ×
                 </button>
               </div>
-              <div className="hp-tracker__bar">
-                <div
-                  className={`hp-tracker__bar-fill ${isDown ? 'is-down' : ''}`}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
+              <input
+                type="range"
+                className={`hp-tracker__slider ${isDown ? 'is-down' : ''}`}
+                min="0"
+                max={hp.max}
+                value={hp.current}
+                onChange={(e) => setCurrent(combatant.id, e.target.value)}
+                style={{ '--hp-pct': `${pct}%` }}
+                aria-label={t('hpTracker.hpSliderAria', { name: combatant.name })}
+              />
               <div className="hp-tracker__controls">
                 <button type="button" onClick={() => applyDelta(combatant.id, -5)}>
                   −5
