@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { usePersistedState } from '../../../hooks/usePersistedState';
+import { resolveCombatantAvatar } from '../../../services/combatants';
 import './HPTracker.css';
 
 const DEFAULT_HP = { current: 10, max: 10 };
 
 export default function HPTracker({ instanceId }) {
-  const { dashboardLayout, getCombat, updateCombatants, syncOptions, t } = useApp();
+  const { dashboardLayout, getCombat, updateCombatants, players, enemies, npcs, syncOptions, t } = useApp();
   const [config, setConfig] = usePersistedState(`hpTracker:${instanceId}`, { linkedInstanceId: null }, syncOptions);
 
   const initiativeInstances = dashboardLayout.filter((item) => (item.type || item.i) === 'initiative');
@@ -95,11 +96,12 @@ export default function HPTracker({ instanceId }) {
           const hp = combatant.hp || DEFAULT_HP;
           const pct = Math.max(0, Math.min(100, (hp.current / hp.max) * 100));
           const isDown = hp.current <= 0;
+          const avatar = resolveCombatantAvatar(combatant, { players, enemies, npcs });
           return (
             <li key={combatant.id} className="hp-tracker__row" style={{ borderLeftColor: combatant.color }}>
               <div className="hp-tracker__row-header">
-                {combatant.image ? (
-                  <img src={combatant.image} alt={combatant.name} className="hp-tracker__combatant-image" />
+                {avatar ? (
+                  <img src={avatar} alt={combatant.name} className="hp-tracker__combatant-image" />
                 ) : (
                   <div className="hp-tracker__combatant-image-placeholder" style={{ background: combatant.color }}>
                     {combatant.name.charAt(0).toUpperCase()}

@@ -1,6 +1,7 @@
 import { Fragment, useEffect } from "react";
 import { useApp } from "../../../context/AppContext";
 import { usePersistedState } from "../../../hooks/usePersistedState";
+import { resolveCombatantAvatar } from "../../../services/combatants";
 import "./SaveThrowTracker.css";
 import saveTracker from "../../../assets/DeathSaves/saveTracker.png";
 function Pips({ count, total = 3 }) {
@@ -28,6 +29,9 @@ export default function SaveThrowTracker({ instanceId }) {
     getCombat,
     recordDeathSave,
     resetDeathSaves,
+    players,
+    enemies,
+    npcs,
     syncOptions,
     t,
   } = useApp();
@@ -108,12 +112,13 @@ export default function SaveThrowTracker({ instanceId }) {
         )}
         {downed.map((combatant) => {
           const saves = combatant.deathSaves || { successes: 0, failures: 0 };
+          const avatar = resolveCombatantAvatar(combatant, { players, enemies, npcs });
           return (
             <li key={combatant.id} className="save-throw-tracker__row">
               <div className="save-throw-tracker__combatant-image-container">
-                {combatant.image ? (
+                {avatar ? (
                   <img
-                    src={combatant.image}
+                    src={avatar}
                     alt={combatant.name}
                     className="save-throw-tracker__combatant-image"
                   />

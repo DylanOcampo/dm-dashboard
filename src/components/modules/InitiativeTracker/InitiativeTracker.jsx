@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { v4 as uuid } from 'uuid';
 import { useApp } from '../../../context/AppContext';
 import { CONDITION_BY_ID } from '../../../data/conditions';
@@ -83,20 +82,19 @@ export default function InitiativeTracker({ instanceId }) {
     setCombatTurnIndex(instanceId, 0);
   };
 
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
-    const reordered = Array.from(combatants);
-    const [moved] = reordered.splice(result.source.index, 1);
-    reordered.splice(result.destination.index, 0, moved);
-
-    // Reasigna los valores de iniciativa (de mayor a menor) a la nueva
-    // posición de cada quien, preservando el mismo conjunto de números que
-    // ya había — así arrastrar para ordenar reemplaza tener que tipear el
-    // número a mano, y el valor mostrado siempre coincide con el orden.
-    const sortedValues = combatants.map((c) => c.initiative).sort((a, b) => b - a);
-    const renumbered = reordered.map((c, idx) => ({ ...c, initiative: sortedValues[idx] }));
-
-    updateThisCombat(() => renumbered);
+  // Reemplaza al drag-and-drop (resultaba confuso): botones ↑/↓ que
+  // simplemente intercambian de lugar con el vecino. El número de
+  // iniciativa viaja con cada combatiente (no se toca), así que el orden
+  // manual nunca queda "desincronizado" del valor mostrado.
+  const moveCombatant = (id, direction) => {
+    updateThisCombat((prev) => {
+      const index = prev.findIndex((c) => c.id === id);
+      const targetIndex = index + direction;
+      if (index === -1 || targetIndex < 0 || targetIndex >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+      return next;
+    });
   };
 
   const availablePlayers = players.filter((p) => !combatants.some((c) => c.playerId === p.id));
@@ -149,97 +147,99 @@ export default function InitiativeTracker({ instanceId }) {
         </button>
       </div>
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="initiative-list">
-          {(provided) => (
-            <ul className="initiative-tracker__list" ref={provided.innerRef} {...provided.droppableProps}>
-              {combatants.length === 0 && (
-                <li className="initiative-tracker__empty">{t('initiative.emptyList')}</li>
+      <ul className="initiative-tracker__list">
+        {combatants.length === 0 && (
+          <li className="initiative-tracker__empty">{t('initiative.emptyList')}</li>
+        )}
+        {combatants.map((combatant, index) => (
+          <li
+            key={combatant.id}
+            className={`initiative-tracker__card ${index === currentTurnIndex ? 'is-current' : ''}`}
+            style={{ borderLeftColor: combatant.color }}
+          >
+            <div className="initiative-tracker__order">
+              <button
+                type="button"
+                className="initiative-tracker__order-btn"
+                onClick={() => moveCombatant(combatant.id, -1)}
+                disabled={index === 0}
+                aria-label={t('initiative.moveUpAria', { name: combatant.name })}
+              >
+                ▲
+              </button>
+              <button
+                type="button"
+                className="initiative-tracker__order-btn"
+                onClick={() => moveCombatant(combatant.id, 1)}
+                disabled={index === combatants.length - 1}
+                aria-label={t('initiative.moveDownAria', { name: combatant.name })}
+              >
+                ▼
+              </button>
+            </div>
+            <span className="initiative-tracker__initiative" title={t('initiative.initiativeTitleHint')}>
+              {combatant.initiative}
+            </span>
+            <input
+              type="text"
+              className="initiative-tracker__name"
+              value={combatant.name}
+              onChange={(e) => updateCombatant(combatant.id, { name: e.target.value })}
+            />
+            {combatant.type === 'player' && combatant.level != null && (
+              <span className="initiative-tracker__level">
+                {t('initiative.levelPrefix')}
+                {combatant.level}
+              </span>
+            )}
+            {combatant.hp && (
+              <span
+                className={`initiative-tracker__hp ${
+                  combatant.hp.current <= 0 ? 'initiative-tracker__hp--down' : ''
+                }`}
+                title={t('initiative.hpTitleHint')}
+              >
+                ❤ {combatant.hp.current}/{combatant.hp.max}
+              </span>
+            )}
+            {combatant.ac != null && (
+              <span className="initiative-tracker__ac" title={combatant.notes || t('initiative.acTitleHint')}>
+                🛡 {combatant.ac}
+              </span>
+            )}
+            {(combatant.type === 'player' || combatant.type === 'npc') &&
+              combatant.hp &&
+              combatant.hp.current <= 0 && (
+                <span
+                  className={`initiative-tracker__death-save ${combatant.isDead ? 'is-dead' : ''}`}
+                  title={t('initiative.deathSaveTitleHint')}
+                >
+                  {combatant.isDead
+                    ? '☠'
+                    : `🎲 ${combatant.deathSaves?.successes || 0}/${combatant.deathSaves?.failures || 0}`}
+                </span>
               )}
-              {combatants.map((combatant, index) => (
-                <Draggable key={combatant.id} draggableId={combatant.id} index={index}>
-                  {(dragProvided, snapshot) => (
-                    <li
-                      ref={dragProvided.innerRef}
-                      {...dragProvided.draggableProps}
-                      {...dragProvided.dragHandleProps}
-                      className={`initiative-tracker__card ${index === currentTurnIndex ? 'is-current' : ''} ${
-                        snapshot.isDragging ? 'is-dragging' : ''
-                      }`}
-                      style={{ borderLeftColor: combatant.color, ...dragProvided.draggableProps.style }}
-                    >
-                      <input
-                        type="number"
-                        className="initiative-tracker__initiative"
-                        value={combatant.initiative}
-                        onChange={(e) => updateCombatant(combatant.id, { initiative: Number(e.target.value) || 0 })}
-                      />
-                      <input
-                        type="text"
-                        className="initiative-tracker__name"
-                        value={combatant.name}
-                        onChange={(e) => updateCombatant(combatant.id, { name: e.target.value })}
-                      />
-                      {combatant.type === 'player' && combatant.level != null && (
-                        <span className="initiative-tracker__level">
-                          {t('initiative.levelPrefix')}
-                          {combatant.level}
-                        </span>
-                      )}
-                      {combatant.hp && (
-                        <span
-                          className={`initiative-tracker__hp ${
-                            combatant.hp.current <= 0 ? 'initiative-tracker__hp--down' : ''
-                          }`}
-                          title={t('initiative.hpTitleHint')}
-                        >
-                          ❤ {combatant.hp.current}/{combatant.hp.max}
-                        </span>
-                      )}
-                      {combatant.ac != null && (
-                        <span className="initiative-tracker__ac" title={combatant.notes || t('initiative.acTitleHint')}>
-                          🛡 {combatant.ac}
-                        </span>
-                      )}
-                      {(combatant.type === 'player' || combatant.type === 'npc') &&
-                        combatant.hp &&
-                        combatant.hp.current <= 0 && (
-                          <span
-                            className={`initiative-tracker__death-save ${combatant.isDead ? 'is-dead' : ''}`}
-                            title={t('initiative.deathSaveTitleHint')}
-                          >
-                            {combatant.isDead
-                              ? '☠'
-                              : `🎲 ${combatant.deathSaves?.successes || 0}/${combatant.deathSaves?.failures || 0}`}
-                          </span>
-                        )}
-                      {combatant.conditions?.length > 0 && (
-                        <span className="initiative-tracker__conditions" title={t('initiative.conditionsTitleHint')}>
-                          {combatant.conditions.map((cond) => (
-                            <span key={cond.id} className="initiative-tracker__condition-badge">
-                              {CONDITION_BY_ID[cond.type]?.emoji ?? '❓'}
-                              {cond.remainingRounds}
-                            </span>
-                          ))}
-                        </span>
-                      )}
-                      <button
-                        type="button"
-                        className="initiative-tracker__remove"
-                        onClick={() => removeCombatant(combatant.id)}
-                        aria-label={t('initiative.removeAria', { name: combatant.name })}
-                      >
-                        ×
-                      </button>
-                    </li>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </ul>
-          )}
-        </Droppable>
-      </DragDropContext>
+            {combatant.conditions?.length > 0 && (
+              <span className="initiative-tracker__conditions" title={t('initiative.conditionsTitleHint')}>
+                {combatant.conditions.map((cond) => (
+                  <span key={cond.id} className="initiative-tracker__condition-badge">
+                    {CONDITION_BY_ID[cond.type]?.emoji ?? '❓'}
+                    {cond.remainingRounds}
+                  </span>
+                ))}
+              </span>
+            )}
+            <button
+              type="button"
+              className="initiative-tracker__remove"
+              onClick={() => removeCombatant(combatant.id)}
+              aria-label={t('initiative.removeAria', { name: combatant.name })}
+            >
+              ×
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

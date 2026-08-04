@@ -53,7 +53,6 @@
   border-radius: 6px;
   border-left: 4px solid var(--border);
   background: var(--surface-header);
-  cursor: grab;
 }
 
 .initiative-tracker__card.is-current {
@@ -61,8 +60,37 @@
   outline-offset: -2px;
 }
 
-.initiative-tracker__card.is-dragging {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+.initiative-tracker__order {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.initiative-tracker__order-btn {
+  width: 1.1rem;
+  height: 0.85rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.55rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.initiative-tracker__order-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.initiative-tracker__order-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .initiative-tracker__initiative {
