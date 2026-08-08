@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { PLANS, formatBytes } from '../../data/plans';
 import { createPortalSession, cancelSubscriptionRemote } from '../../services/stripeService';
 import Pricing from '../Pricing/Pricing';
+import FileManager from '../FileManager/FileManager';
 import './Account.css';
 
 const GRACE_PERIOD_DAYS = 30;
@@ -19,13 +21,11 @@ function planLabel(t, planCode) {
 }
 
 export default function Account() {
+  const navigate = useNavigate();
   const {
     user,
     authLoading,
-    signUp,
-    signIn,
     signOut,
-    resetPassword,
     deleteAccount,
     subscription,
     refreshSubscription,
@@ -34,12 +34,7 @@ export default function Account() {
     t,
   } = useApp();
 
-  const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
-  const [formNotice, setFormNotice] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [cancelingRenewal, setCancelingRenewal] = useState(false);
@@ -50,40 +45,6 @@ export default function Account() {
     d.setDate(d.getDate() + GRACE_PERIOD_DAYS);
     return d;
   }, [subscription]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormError('');
-    setFormNotice('');
-    setSubmitting(true);
-    try {
-      if (mode === 'signup') {
-        await signUp(email, password);
-        setFormNotice(t('account.signupSuccess'));
-      } else {
-        await signIn(email, password);
-      }
-    } catch (err) {
-      setFormError(err.message || t('account.authErrorGeneric'));
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    setFormError('');
-    setFormNotice('');
-    if (!email) {
-      setFormError(t('account.emailRequiredForReset'));
-      return;
-    }
-    try {
-      await resetPassword(email);
-      setFormNotice(t('account.resetEmailSent'));
-    } catch (err) {
-      setFormError(err.message || t('account.authErrorGeneric'));
-    }
-  };
 
   const handleManageSubscription = async () => {
     setPortalLoading(true);
@@ -134,55 +95,19 @@ export default function Account() {
       <section className="account">
         <h2>{t('account.title')}</h2>
         {!isSupabaseConfigured && <p className="account__warning">{t('account.warningNoSupabase')}</p>}
-        <p className="account__intro">
-          {mode === 'signup' ? t('account.introSignup') : t('account.introGuest')}
-        </p>
-        <form className="account__auth-form" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder={t('account.emailPlaceholder')}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder={t('account.passwordPlaceholder')}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
-            required
-          />
-          <button type="submit" disabled={submitting || !isSupabaseConfigured}>
-            {mode === 'signup' ? t('account.signupButton') : t('account.loginButton')}
-          </button>
-        </form>
-        {formError && <p className="account__error">{formError}</p>}
-        {formNotice && <p className="account__notice">{formNotice}</p>}
-        <div className="account__auth-switch">
-          {mode === 'signin' ? (
-            <>
-              <button type="button" className="account__link" onClick={() => setMode('signup')}>
-                {t('account.switchToSignup')}
-              </button>
-              <button type="button" className="account__link" onClick={handleForgotPassword}>
-                {t('account.forgotPassword')}
-              </button>
-            </>
-          ) : (
-            <button type="button" className="account__link" onClick={() => setMode('signin')}>
-              {t('account.switchToSignin')}
-            </button>
-          )}
-        </div>
+        <p className="account__intro">{t('account.introGuest')}</p>
+        <button type="button" className="account__login-cta" onClick={() => navigate('/login')}>
+          {t('account.goToLoginButton')}
+        </button>
         <p className="account__disclaimer">{t('account.disclaimerGuest')}</p>
       </section>
     );
   }
 
   return (
-    <section className="account">
-      <h2>{t('account.title')}</h2>
+    <div className="account-page">
+      <section className="account">
+        <h2>{t('account.title')}</h2>
       <div className="account__info">
         <span className="account__email">{user.email}</span>
         <span
@@ -260,8 +185,13 @@ export default function Account() {
           {deleting ? t('account.deleting') : t('account.deleteAccountButton')}
         </button>
       </div>
-      {formError && <p className="account__error">{formError}</p>}
-      <p className="account__disclaimer">{t('account.disclaimerUser')}</p>
-    </section>
+        {formError && <p className="account__error">{formError}</p>}
+        <p className="account__disclaimer">{t('account.disclaimerUser')}</p>
+      </section>
+
+      <hr className="account-page__divider" />
+
+      <FileManager />
+    </div>
   );
 }

@@ -1,37 +1,53 @@
 .nav {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+  width: 104px;
+  flex-shrink: 0;
+  height: 60vh;
+  padding: 1rem 0.5rem;
   gap: 1.25rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--surface-header);
+  border-right: 1px solid var(--border);
 }
 
 .nav__brand {
+  background: none;
+  border: none;
+  color: var(--text);
   font-weight: 700;
-  font-size: 1.05rem;
-  white-space: nowrap;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  padding: 0 0.25rem;
 }
 
 .nav__links {
   display: flex;
+  flex-direction: column;
   gap: 0.4rem;
   flex: 1;
-  flex-wrap: wrap;
+  overflow-y: auto;
 }
 
 .nav__link {
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.55rem 0.3rem;
+  border-radius: 10px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 0.9rem;
+  text-align: center;
 }
 
 .nav__link:hover {
   border-color: var(--border);
+  background: var(--surface);
 }
 
 .nav__link.is-active {
@@ -39,17 +55,41 @@
   color: var(--accent-contrast);
 }
 
+.nav__link-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.nav__link-icon--emoji {
+  font-size: 1.5rem;
+  line-height: 34px;
+}
+
+.nav__link-label {
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+.nav__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .nav__language {
-  padding: 0.3rem 0.5rem;
+  width: 100%;
+  padding: 0.3rem 0.25rem;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .nav__status {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
-  white-space: nowrap;
+  text-align: center;
 }

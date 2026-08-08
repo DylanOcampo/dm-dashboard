@@ -8,18 +8,21 @@ async function invoke(fnName, body) {
 }
 
 export async function createCheckoutSession(priceId) {
+  // El query param va antes del hash a propósito: la app usa HashRouter
+  // (GitHub Pages no soporta rutas reales), y "#/app" hace que vuelva
+  // directo al dashboard en vez de a la landing.
   const origin = window.location.origin + window.location.pathname;
   const { url } = await invoke('create-checkout-session', {
     priceId,
-    successUrl: `${origin}?checkout=success`,
-    cancelUrl: `${origin}?checkout=cancelled`,
+    successUrl: `${origin}?checkout=success#/app`,
+    cancelUrl: `${origin}?checkout=cancelled#/app`,
   });
   return url;
 }
 
 export async function createPortalSession() {
   const origin = window.location.origin + window.location.pathname;
-  const { url } = await invoke('create-portal-session', { returnUrl: origin });
+  const { url } = await invoke('create-portal-session', { returnUrl: `${origin}#/app` });
   return url;
 }
 

@@ -1,0 +1,116 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  
+  height: 154px;
+  flex-shrink: 0;
+  width: 100vw;
+  padding: 1rem 0.5rem;
+  gap: 1.25rem;
+  background: transparent;
+  border-right: 1px solid var(--border);
+}
+
+.header__top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px;
+  gap: 1rem;
+}
+
+.header__logo__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.3rem;
+  border-radius: 10px;
+  
+  text-align: center;
+}
+
+.header__add-button{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.header__mods-menu-container{
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  overflow: visible;
+
+}
+
+.header__mods-menu-overlay{
+  position: absolute;
+  top: -55px;
+  left: -8px;
+  min-width: 100vw;
+  min-height: 100vh;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.header__mods-menu{
+  position: absolute;
+  margin-left: 220px;
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: 100px 100px 100px 100px 100px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0.5rem;
+  gap: 25px;
+
+  z-index: 1000;
+  top: 100%;
+  left: 0;
+  width: 713px;
+  height: 446px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 99% 95%;
+  background-position-x: 50%;
+  background-color: #61422B;
+  border-radius: 10px;
+  padding: 40px 40px;
+  padding-left: 55px;
+}
+
+.header__mods-menu-item__icon{
+  height: 56px;
+  width: 56px;
+  object-fit: contain;
+  padding: 10px;
+  border-radius: 3px;
+  background-color: var(--icon-bg);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  cursor: pointer;
+}
+
+.header__mods-menu-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text);
+  font-size: 14px;
+  gap: 5px;
+}
+
+.header__mods-menu-item:hover{
+  background-color: var(--surface);
+  border-radius: 5px;
+}

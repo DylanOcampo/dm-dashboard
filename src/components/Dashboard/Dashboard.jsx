@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { useApp } from '../../context/AppContext';
@@ -19,6 +19,7 @@ import SaveThrowTracker from '../modules/SaveThrowTracker/SaveThrowTracker';
 import Calculator from '../modules/Calculator/Calculator';
 import './Dashboard.css';
 
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const MODULE_COMPONENTS = {
@@ -29,9 +30,6 @@ const MODULE_COMPONENTS = {
   notes: NotesModule,
   dice: DiceRoller,
   soundboard: Soundboard,
-  // 'pdf'/'image' son los tipos legado de antes de unificar los visores en
-  // un solo módulo — se mantienen mapeados al mismo componente para que las
-  // instancias ya guardadas en dashboards existentes no desaparezcan.
   files: FileViewer,
   pdf: FileViewer,
   image: FileViewer,
@@ -48,25 +46,13 @@ export default function Dashboard() {
   const {
     dashboardLayout,
     setDashboardLayout,
-    allModules,
-    addModuleInstance,
     removeModuleInstance,
-    scenes,
-    activeSceneId,
-    setActiveSceneId,
-    addScene,
-    renameScene,
-    removeScene,
     t,
   } = useApp();
-  const [selectedModuleType, setSelectedModuleType] = useState(allModules[0]?.id ?? '');
+
 
   const layouts = useMemo(() => ({ lg: dashboardLayout, md: dashboardLayout, sm: dashboardLayout }), [dashboardLayout]);
 
-  const handleAddModule = () => {
-    if (!selectedModuleType) return;
-    addModuleInstance(selectedModuleType);
-  };
 
   const handleLayoutChange = (currentLayout) => {
     setDashboardLayout((prev) =>
@@ -79,61 +65,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <div className="dashboard__scenes">
-        {scenes.map((scene) =>
-          scene.id === activeSceneId ? (
-            <div key={scene.id} className="dashboard__scene-tab is-active">
-              <input
-                type="text"
-                className="dashboard__scene-name-input"
-                value={scene.name}
-                onChange={(e) => renameScene(scene.id, e.target.value)}
-                aria-label={t('scenes.renameAria')}
-              />
-              {scenes.length > 1 && (
-                <button
-                  type="button"
-                  className="dashboard__scene-remove"
-                  onClick={() => removeScene(scene.id)}
-                  aria-label={t('scenes.removeAria', { name: scene.name })}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          ) : (
-            <button
-              key={scene.id}
-              type="button"
-              className="dashboard__scene-tab"
-              onClick={() => setActiveSceneId(scene.id)}
-            >
-              {scene.name}
-            </button>
-          )
-        )}
-        <button type="button" className="dashboard__scene-add" onClick={addScene}>
-          {t('scenes.addButton')}
-        </button>
-      </div>
-
-      <div className="dashboard__toolbar">
-        <span className="dashboard__toolbar-label">{t('dashboard.addModuleLabel')}</span>
-        <select
-          className="dashboard__module-select"
-          value={selectedModuleType}
-          onChange={(e) => setSelectedModuleType(e.target.value)}
-        >
-          {allModules.map((mod) => (
-            <option key={mod.id} value={mod.id}>
-              {mod.label}
-            </option>
-          ))}
-        </select>
-        <button type="button" className="dashboard__module-add" onClick={handleAddModule}>
-          {t('dashboard.addButton')}
-        </button>
-      </div>
 
       <ResponsiveGridLayout
         className="dashboard__grid"

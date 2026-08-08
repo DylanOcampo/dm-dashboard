@@ -1,14 +1,22 @@
 .app-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   
+  display: flex;
+  flex-direction: row;
+  background-color: transparent;
 }
 
 .app-shell__content {
   flex: 1;
-  background: url('assets/General/Bg.png') ;
-  background-size: cover;
+  min-width: 0;
+
+  
   opacity: 1;
-  background-color: #000000;
+  background-color: transparent;
+}
+
+#root{
+    background: url('assets/General/Bg.png') ;
+    background-size: cover;
+
+  overflow: overlay;
 }

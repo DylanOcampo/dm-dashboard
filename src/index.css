@@ -7,7 +7,7 @@
   --text-dark: #3F3F3F;
   --text-muted: #ffffff;
   --accent: #736448;
-  --accent-contrast: #e9c46a;
+  --accent-contrast: #D59B34;
   --danger: #7F4242;
   --success: #4E7F42;
   --gold: #e9c46a;
@@ -15,6 +15,7 @@
   --base-text-size: 12px;
   --dark: #2B2B2B;
   --light-bg: #DFD3B7;
+  --icon-bg: #FADBA5;
 }
 
 * {
@@ -25,6 +26,7 @@ html,
 body,
 #root {
   height: 100%;
+  font-family: 'Satoshi-Regular', sans-serif;
 }
 
 body {

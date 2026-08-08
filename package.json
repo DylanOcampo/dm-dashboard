@@ -16,6 +16,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-grid-layout": "^1.5.3",
+    "react-router-dom": "^7.18.2",
     "react-scripts": "5.0.1",
     "uuid": "^14.0.1",
     "web-vitals": "^2.1.4"

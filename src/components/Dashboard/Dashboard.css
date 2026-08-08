@@ -14,12 +14,16 @@
 
 .dashboard__scene-tab {
   padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
+  border-radius: 30px;
+  border: 1px solid var(--accent-contrast);
   background: var(--surface);
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 16px;
   cursor: pointer;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  -ms-border-radius: 30px;
+  -o-border-radius: 30px;
 }
 
 .dashboard__scene-tab:hover {
@@ -32,14 +36,14 @@
   gap: 0.3rem;
   padding: 0.2rem 0.3rem 0.2rem 0.8rem;
   border-radius: 999px;
-  border: 1px solid var(--accent);
-  background: var(--accent);
+  color: var(--text-dark);
+  background: var(--accent-contrast);
 }
 
 .dashboard__scene-name-input {
   background: transparent;
   border: none;
-  color: var(--accent-contrast);
+  color: var(--text-dark);
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.15rem 0;
@@ -52,9 +56,9 @@
 }
 
 .dashboard__scene-remove {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.692);
   border: none;
-  color: var(--accent-contrast);
+  color: var(--text-dark);
   border-radius: 50%;
   width: 1.3rem;
   height: 1.3rem;
@@ -103,6 +107,22 @@
   background: var(--base-button);
   color: var(--text-dark) ;
   font-size: 0.85rem;
+}
+
+.dashboard__deco-container {
+  
+  max-width: 0px;
+  max-height: 0px;
+  pointer-events: none;
+  overflow: visible;
+}
+.dashboard__deco {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
 }
 
 .dashboard__module-add {

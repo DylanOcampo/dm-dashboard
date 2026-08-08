@@ -1,3 +1,16 @@
+.account-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-page__divider {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
 .account {
   max-width: 480px;
   margin: 0 auto;
@@ -5,6 +18,17 @@
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+}
+
+.account__login-cta {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  cursor: pointer;
+  font-weight: 600;
+  align-self: flex-start;
 }
 
 .account__intro {
