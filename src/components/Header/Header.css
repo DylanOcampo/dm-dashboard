@@ -7,7 +7,7 @@
   height: 154px;
   flex-shrink: 0;
   width: 100vw;
-  padding: 1rem 0.5rem;
+  padding: 1rem 0;
   gap: 1.25rem;
   background: transparent;
   border-right: 1px solid var(--border);

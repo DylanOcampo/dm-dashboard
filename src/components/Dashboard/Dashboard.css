@@ -1,5 +1,8 @@
 .dashboard {
+  position: relative;
   padding: 1rem 1.5rem 3rem;
+  min-height: 83vh;
+  height: 83vh;
 }
 
 .dashboard__scenes {
@@ -9,7 +12,7 @@
   gap: 0.4rem;
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
-  
+  padding-left: 20px;
 }
 
 .dashboard__scene-tab {
@@ -74,10 +77,9 @@
 .dashboard__scene-add {
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
-  border: 1px dashed var(--border);
+  border: 0px dashed var(--border);
   background: transparent;
-  color: var(--text-muted);
-  font-size: 0.85rem;
+
   cursor: pointer;
 }
 
@@ -109,20 +111,23 @@
   font-size: 0.85rem;
 }
 
-.dashboard__deco-container {
-  
-  max-width: 0px;
-  max-height: 0px;
-  pointer-events: none;
-  overflow: visible;
-}
 .dashboard__deco {
   position: absolute;
   bottom: 5px;
-  left: 5px;
   width: 120px;
   height: 120px;
-  object-fit: cover;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard__deco--left {
+  left: -100px;
+}
+
+.dashboard__deco--right {
+  right: 5px;
+  transform: scaleX(-1);
 }
 
 .dashboard__module-add {
@@ -204,6 +209,8 @@
 
 
 .widget__body {
+  scrollbar-width:none;
+
   flex: 1;
   min-height: 0;
   overflow: auto;

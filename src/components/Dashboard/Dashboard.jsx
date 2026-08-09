@@ -17,6 +17,7 @@ import NPCReference from '../modules/NPCReference/NPCReference';
 import PlayerReference from '../modules/PlayerReference/PlayerReference';
 import SaveThrowTracker from '../modules/SaveThrowTracker/SaveThrowTracker';
 import Calculator from '../modules/Calculator/Calculator';
+import dashboardDeco from '../../assets/General/Dashboard-deco.svg';
 import './Dashboard.css';
 
 
@@ -65,6 +66,8 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      <img src={dashboardDeco} alt="" aria-hidden="true" className="dashboard__deco dashboard__deco--left" />
+      <img src={dashboardDeco} alt="" aria-hidden="true" className="dashboard__deco dashboard__deco--right" />
 
       <ResponsiveGridLayout
         className="dashboard__grid"

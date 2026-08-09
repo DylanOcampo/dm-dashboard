@@ -16,7 +16,7 @@ export const DEFAULT_LANGUAGE = 'es';
 const translations = {
   es: {
     nav: {
-      brand: '🐉 DM Dashboard',
+      brand: 'DM Dashboard',
       dashboard: 'Dashboard',
       players: 'Jugadores',
       enemies: 'Enemigos',
@@ -425,7 +425,7 @@ Rara,Espada +1,Espada mágica que otorga +1 a los ataques,500`,
   },
   en: {
     nav: {
-      brand: '🐉 DM Dashboard',
+      brand: 'DM Dashboard',
       dashboard: 'Dashboard',
       players: 'Players',
       enemies: 'Enemies',
@@ -727,7 +727,7 @@ Rare,Sword +1,Magic sword that grants +1 to attacks,500`,
       loading: 'Loading the campaign...',
     },
     playerApp: {
-      brand: '🐉 DM Dashboard (player)',
+      brand: 'DM Dashboard (player)',
       playingAs: 'Playing as {name}',
       addModuleLabel: 'Add module:',
       addButton: '+ Add',

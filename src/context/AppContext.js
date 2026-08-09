@@ -22,6 +22,28 @@ const PLAYER_COLORS = ['#e63946', '#457b9d', '#2a9d8f', '#e9c46a', '#9d4edd', '#
 const ENEMY_COLORS = ['#6c757d', '#8d5524', '#a4243b', '#4a4e69', '#5f6b3f', '#5c3d2e'];
 const NPC_COLORS = ['#06d6a0', '#118ab2', '#8338ec', '#ffb703', '#3a86ff', '#fb8500'];
 
+// Coincide con el `cols.lg` de ResponsiveGridLayout en Dashboard.jsx: el
+// layout es compartido entre breakpoints, así que usamos el de escritorio
+// como referencia para decidir dónde cabe un módulo nuevo.
+const GRID_COLS = 12;
+
+// Busca el primer hueco libre recorriendo la grilla fila por fila y, dentro
+// de cada fila, de izquierda a derecha. Así los módulos nuevos se acomodan
+// en horizontal y solo bajan a una "línea" nueva cuando ya no hay espacio
+// (100vw / GRID_COLS columnas) en la fila actual.
+function findNextGridPosition(layout, w, h) {
+  const maxY = layout.reduce((acc, item) => Math.max(acc, item.y + item.h), 0);
+  for (let y = 0; y <= maxY; y++) {
+    for (let x = 0; x <= GRID_COLS - w; x++) {
+      const collides = layout.some(
+        (item) => x < item.x + item.w && x + w > item.x && y < item.y + item.h && y + h > item.y
+      );
+      if (!collides) return { x, y };
+    }
+  }
+  return { x: 0, y: maxY };
+}
+
 function createDefaultLayout() {
   return [
     { i: uuid(), type: 'time', x: 0, y: 0, w: 4, h: 4, minW: 3, minH: 3 },
@@ -459,8 +481,10 @@ export function AppProvider({ children }) {
   const addModuleInstance = useCallback(
     (moduleType) => {
       setDashboardLayout((prev) => {
-        const maxY = prev.reduce((acc, item) => Math.max(acc, item.y + item.h), 0);
-        return [...prev, { i: uuid(), type: moduleType, x: 0, y: maxY, w: 4, h: 6, minW: 3, minH: 3 }];
+        const w = 4;
+        const h = 6;
+        const { x, y } = findNextGridPosition(prev, w, h);
+        return [...prev, { i: uuid(), type: moduleType, x, y, w, h, minW: 3, minH: 3 }];
       });
     },
     [setDashboardLayout]

@@ -24,7 +24,7 @@ export default function Header({ activeView, onChangeView }) {
       <div className="header__top">
         <div
           className="header__logo__container"
-          style={{ paddingLeft: "50px" }}
+          style={{ paddingLeft: "25px" }}
         >
           <img src={logo} alt="Logo" />
           <p style={{paddingLeft: "10px"}}>{t("header.brand")}</p>
@@ -53,7 +53,7 @@ export default function Header({ activeView, onChangeView }) {
 
         <div
           className="header__logo__container"
-          style={{ paddingRight: "50px" }}
+          style={{ paddingRight: "25px" }}
         >
           <img src={profile} alt="Logo" onClick={() => onChangeView('account')} />
           <p style={{paddingLeft: "10px"}}>{t("header.account")}</p>
@@ -63,7 +63,7 @@ export default function Header({ activeView, onChangeView }) {
         </div>
       </div>
 
-    <div className="dashboard__scenes" style={{ paddingLeft: "40px" }}>
+    <div className="dashboard__scenes">
         {scenes.map((scene) =>
           scene.id === activeSceneId ? (
             <div key={scene.id} className="dashboard__scene-tab is-active">

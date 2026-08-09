@@ -3,7 +3,7 @@ import { useApp } from '../../../context/AppContext';
 import { usePersistedState } from '../../../hooks/usePersistedState';
 import { sanitizeNoteHtml } from '../../../services/sanitizeHtml';
 import './NotesModule.css';
-
+import addButton from "../../../assets/Header/AddButton.svg";
 const DEFAULT_TEXT_COLOR = '#e6e6e6';
 
 export default function NotesModule({ instanceId }) {
@@ -89,11 +89,7 @@ export default function NotesModule({ instanceId }) {
     return (
       <div className="notes-module">
         <div className="notes-module__library">
-          <div className="notes-module__library-toolbar">
-            <button type="button" onClick={handleNewNote}>
-              {t('notes.newButton')}
-            </button>
-          </div>
+          
           {notesLibrary.length === 0 ? (
             <p className="notes-module__empty">{t('notes.emptyLibrary')}</p>
           ) : (
@@ -112,6 +108,12 @@ export default function NotesModule({ instanceId }) {
               ))}
             </ul>
           )}
+          <div className="notes-module__library-toolbar">
+           <button type="button" onClick={handleNewNote}>
+              <img src={addButton} alt="Add" style={{ width: "32px"}} />
+            </button>
+          </div>
+                     
         </div>
       </div>
     );
