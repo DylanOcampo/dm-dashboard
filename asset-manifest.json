@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.17f35503.css",
-    "main.js": "./static/js/main.0a6b4787.js",
+    "main.css": "./static/css/main.5bb7508f.css",
+    "main.js": "./static/js/main.e310b947.js",
     "static/media/Bg.png": "./static/media/Bg.6edfa7c84e0c5ec9405d.png",
     "static/media/saveThrows.svg": "./static/media/saveThrows.59e482fd5546d3cf0a22.svg",
     "static/media/soundboard.svg": "./static/media/soundboard.8cdbc114395867d4e981.svg",
@@ -18,16 +18,20 @@
     "static/media/initiative.svg": "./static/media/initiative.29994cfa3adbf9ed6300.svg",
     "static/media/Mark.png": "./static/media/Mark.2302ee1a3cd232be5d06.png",
     "static/media/hp.svg": "./static/media/hp.3f7dc3767b0583680350.svg",
+    "static/media/Dashboard-deco.svg": "./static/media/Dashboard-deco.401e86af60f8528cbf48014e974d0ab2.svg",
     "static/media/Logo.svg": "./static/media/Logo.a50e26fe672aec70843ef81cc9bf4aa0.svg",
     "static/media/playerReference.svg": "./static/media/playerReference.3c29ddd22935418907c4.svg",
     "static/media/AccountDeco.svg": "./static/media/AccountDeco.e1e0ef11979e0b9d373304102a1a86de.svg",
     "static/media/AddButton.svg": "./static/media/AddButton.05fed2157d949907519456acbeb393c0.svg",
     "index.html": "./index.html",
-    "main.17f35503.css.map": "./static/css/main.17f35503.css.map",
-    "main.0a6b4787.js.map": "./static/js/main.0a6b4787.js.map"
+    "static/media/Delete.svg": "./static/media/Delete.2084a0c40fe0aa707043dd67727d97cf.svg",
+    "static/media/ChevronDown.svg": "./static/media/ChevronDown.8f32cd3af68e0a06ab341b90fbd0d157.svg",
+    "static/media/Profile.svg": "./static/media/Profile.0f6f95a9c9d1fd949615b4c05f11ad18.svg",
+    "main.5bb7508f.css.map": "./static/css/main.5bb7508f.css.map",
+    "main.e310b947.js.map": "./static/js/main.e310b947.js.map"
   },
   "entrypoints": [
-    "static/css/main.17f35503.css",
-    "static/js/main.0a6b4787.js"
+    "static/css/main.5bb7508f.css",
+    "static/js/main.e310b947.js"
   ]
 }
