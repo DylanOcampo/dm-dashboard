@@ -170,6 +170,21 @@ export function PlayerSessionProvider({ token, children }) {
     [setPlayerLayout]
   );
 
+  const toggleModuleMinimized = useCallback(
+    (instanceId) => {
+      setPlayerLayout((prev) =>
+        prev.map((item) => {
+          if (item.i !== instanceId) return item;
+          if (item.minimized) {
+            return { ...item, minimized: false, h: item.prevH ?? item.h, prevH: undefined };
+          }
+          return { ...item, minimized: true, prevH: item.h, h: 2 };
+        })
+      );
+    },
+    [setPlayerLayout]
+  );
+
   // Primera vez que entra (sin layout guardado todavía): arranca ya armado
   // con el set de módulos que el DM habilitó.
   useEffect(() => {
@@ -214,6 +229,7 @@ export function PlayerSessionProvider({ token, children }) {
       setPlayerLayout,
       addModuleInstance,
       removeModuleInstance,
+      toggleModuleMinimized,
       syncDashboard,
       refresh: loadSnapshot,
       liveCombat,
@@ -233,6 +249,7 @@ export function PlayerSessionProvider({ token, children }) {
       setPlayerLayout,
       addModuleInstance,
       removeModuleInstance,
+      toggleModuleMinimized,
       syncDashboard,
       loadSnapshot,
       liveCombat,

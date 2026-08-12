@@ -2,7 +2,7 @@
   position: relative;
   padding: 1rem 1.5rem 3rem;
   min-height: 83vh;
-  height: 83vh;
+
 }
 
 .dashboard__scenes {
@@ -170,7 +170,7 @@
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
   background: var(--surface-header);
-  
+
   cursor: grab;
   font-weight: 600;
   font-size: 0.9rem;
@@ -180,6 +180,48 @@
 
 .widget__header:active {
   cursor: grabbing;
+}
+
+.widget__header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.widget__minimize {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.widget__minimize-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.widget--minimized .widget__minimize-icon {
+  transform: rotate(-180deg);
+  -webkit-transform: rotate(-180deg);
+  -moz-transform: rotate(-180deg);
+  -ms-transform: rotate(-180deg);
+  -o-transform: rotate(-180deg);
+}
+
+.widget--minimized .widget__body {
+  display: none;
+}
+
+.react-grid-item:has(> .widget--minimized) > .react-resizable-handle {
+  display: none;
 }
 
 .widget__close-container{

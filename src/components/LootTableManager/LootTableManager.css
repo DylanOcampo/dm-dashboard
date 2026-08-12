@@ -124,19 +124,29 @@
 .loot-table-manager__category {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-left: 4px solid var(--rarity-color, var(--accent-contrast));
   border-radius: 8px;
   padding: 1rem;
 }
 
 .loot-table-manager__category-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
 .loot-table-manager__category-header h3 {
   margin: 0;
+  margin-right: auto;
+}
+
+.loot-table-manager__category-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--rarity-color, var(--accent-contrast));
+  flex-shrink: 0;
 }
 
 .loot-table-manager__category-actions {

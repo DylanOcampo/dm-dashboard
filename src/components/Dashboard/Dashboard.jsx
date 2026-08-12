@@ -20,6 +20,7 @@ import Calculator from '../modules/Calculator/Calculator';
 import dashboardDeco from '../../assets/General/Dashboard-deco.svg';
 import './Dashboard.css';
 
+import chevron from '../../assets/General/ChevronDown.svg';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -48,6 +49,7 @@ export default function Dashboard() {
     dashboardLayout,
     setDashboardLayout,
     removeModuleInstance,
+    toggleModuleMinimized,
     t,
   } = useApp();
 
@@ -76,7 +78,7 @@ export default function Dashboard() {
         cols={{ lg: 12, md: 8, sm: 4 }}
         rowHeight={30}
         draggableHandle=".widget__header"
-        draggableCancel=".widget__close"
+        draggableCancel=".widget__close, .widget__minimize"
         onLayoutChange={handleLayoutChange}
         compactType="vertical"
       >
@@ -88,17 +90,27 @@ export default function Dashboard() {
           if (!ModuleComponent) return null;
           const moduleTitle = t(`dashboard.modules.${moduleType}`);
           return (
-            <div key={item.i} className="widget">
+            <div key={item.i} className={`widget${item.minimized ? ' widget--minimized' : ''}`}>
               <div className="widget__header">
-                <span>{moduleTitle}</span>
-                <div className="widget__close-container"> 
+                <div className="widget__header-left">
+                  <button
+                    type="button"
+                    className="widget__minimize"
+                    onClick={() => toggleModuleMinimized(item.i)}
+                    aria-label={t(item.minimized ? 'dashboard.expandModuleAria' : 'dashboard.minimizeModuleAria', { name: moduleTitle })}
+                  >
+                    <img src={chevron} alt="" aria-hidden="true" className="widget__minimize-icon" />
+                  </button>
+                  <span>{moduleTitle}</span>
+                </div>
+                <div className="widget__close-container">
                   <button
                   type="button"
                   className="widget__close"
                   onClick={() => removeModuleInstance(item.i)}
                   aria-label={t('dashboard.removeModuleAria', { name: moduleTitle })}
                 >
-                  
+
                 </button>
                 </div>
               </div>

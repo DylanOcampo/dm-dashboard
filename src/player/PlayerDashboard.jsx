@@ -52,6 +52,7 @@ export default function PlayerDashboard() {
     setPlayerLayout,
     addModuleInstance,
     removeModuleInstance,
+    toggleModuleMinimized,
     syncDashboard,
   } = usePlayerSession();
 
@@ -129,7 +130,7 @@ export default function PlayerDashboard() {
         cols={{ lg: 12, md: 8, sm: 4 }}
         rowHeight={30}
         draggableHandle=".widget__header"
-        draggableCancel=".widget__close"
+        draggableCancel=".widget__close, .widget__minimize"
         onLayoutChange={handleLayoutChange}
         compactType="vertical"
       >
@@ -138,9 +139,19 @@ export default function PlayerDashboard() {
           if (!ModuleComponent) return null;
           const moduleTitle = t(`dashboard.modules.${item.type}`);
           return (
-            <div key={item.i} className="widget">
+            <div key={item.i} className={`widget${item.minimized ? ' widget--minimized' : ''}`}>
               <div className="widget__header">
-                <span>{moduleTitle}</span>
+                <div className="widget__header-left">
+                  <button
+                    type="button"
+                    className="widget__minimize"
+                    onClick={() => toggleModuleMinimized(item.i)}
+                    aria-label={t(item.minimized ? 'dashboard.expandModuleAria' : 'dashboard.minimizeModuleAria', { name: moduleTitle })}
+                  >
+                    <span className="widget__minimize-icon" />
+                  </button>
+                  <span>{moduleTitle}</span>
+                </div>
                 <button
                   type="button"
                   className="widget__close"

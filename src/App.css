@@ -22,7 +22,26 @@
   overflow: overlay;
   overflow-x: hidden;
 
-  scrollbar-width: none;
 
 
+
+}
+
+#root::-webkit-scrollbar {
+  width: thin; /* Chrome, Safari, Opera */
+  height: thin; /* Chrome, Safari, Opera */
+  background: #ffd6b29f; 
+  width: 10px; 
+  height: 10px; 
+  
+}
+
+#root::-webkit-scrollbar-thumb {
+  background: #FFD6B2;
+
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }

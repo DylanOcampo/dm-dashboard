@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useApp } from '../../context/AppContext';
 import { parseJSONItems, parseCSVItems } from '../../services/bulkImport';
+import { RARITY_ORDER, getRarityColor } from '../../data/defaultLootTable';
 import './LootTableManager.css';
 
 export default function LootTableManager() {
@@ -93,10 +94,16 @@ export default function LootTableManager() {
         <form className="loot-table-manager__add-category" onSubmit={addCategory}>
           <input
             type="text"
+            list="loot-table-rarity-presets"
             placeholder={t('lootTable.newCategoryPlaceholder')}
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
           />
+          <datalist id="loot-table-rarity-presets">
+            {RARITY_ORDER.filter((r) => !lootTable[r]).map((r) => (
+              <option key={r} value={r} />
+            ))}
+          </datalist>
           <button type="submit">{t('lootTable.addCategoryButton')}</button>
         </form>
       </header>
@@ -128,8 +135,13 @@ export default function LootTableManager() {
       </div>
 
       {Object.entries(lootTable).map(([category, items]) => (
-        <div key={category} className="loot-table-manager__category">
+        <div
+          key={category}
+          className="loot-table-manager__category"
+          style={{ '--rarity-color': getRarityColor(category) }}
+        >
           <div className="loot-table-manager__category-header">
+            <span className="loot-table-manager__category-dot" />
             <h3>{category}</h3>
             <div className="loot-table-manager__category-actions">
               <button type="button" onClick={() => addItem(category)}>

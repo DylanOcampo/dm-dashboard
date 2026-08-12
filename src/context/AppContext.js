@@ -498,6 +498,25 @@ export function AppProvider({ children }) {
     [setDashboardLayout, removeCombat]
   );
 
+  // Altura (en filas de la grilla) a la que se reduce un módulo minimizado:
+  // apenas lo suficiente para dejar visible solo su header.
+  const MINIMIZED_H = 2;
+
+  const toggleModuleMinimized = useCallback(
+    (instanceId) => {
+      setDashboardLayout((prev) =>
+        prev.map((item) => {
+          if (item.i !== instanceId) return item;
+          if (item.minimized) {
+            return { ...item, minimized: false, h: item.prevH ?? item.h, prevH: undefined };
+          }
+          return { ...item, minimized: true, prevH: item.h, h: MINIMIZED_H };
+        })
+      );
+    },
+    [setDashboardLayout]
+  );
+
   const allModules = useMemo(
     () => ALL_MODULE_IDS.map((id) => ({ id, label: t(`dashboard.modules.${id}`) })),
     [t]
@@ -564,6 +583,7 @@ export function AppProvider({ children }) {
       setDashboardLayout,
       addModuleInstance,
       removeModuleInstance,
+      toggleModuleMinimized,
       allModules,
     }),
     [
@@ -624,6 +644,7 @@ export function AppProvider({ children }) {
       setDashboardLayout,
       addModuleInstance,
       removeModuleInstance,
+      toggleModuleMinimized,
       allModules,
       syncOptions,
     ]

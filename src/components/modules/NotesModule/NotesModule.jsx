@@ -4,7 +4,12 @@ import { usePersistedState } from '../../../hooks/usePersistedState';
 import { sanitizeNoteHtml } from '../../../services/sanitizeHtml';
 import './NotesModule.css';
 import addButton from "../../../assets/Header/AddButton.svg";
+import backButton from "../../../assets/General/ChevronDown.svg";
+import deleteButton from "../../../assets/General/Delete.svg";
 const DEFAULT_TEXT_COLOR = '#e6e6e6';
+
+const GROUP_TAB_COLORS = ['#FFD6B2', '#F6B57C', '#F49E52'];
+const GROUP_TAB_OFFSETS = [20, 42, 64];
 
 export default function NotesModule({ instanceId }) {
   const { notesLibrary, addNote, updateNote, removeNote, syncOptions, t } = useApp();
@@ -13,6 +18,15 @@ export default function NotesModule({ instanceId }) {
   const initRef = useRef(false);
 
   const currentNote = notesLibrary.find((n) => n.id === openNoteId) || null;
+
+
+  const orderedGroups = [];
+  notesLibrary.forEach((n) => {
+    if (n.group && !orderedGroups.includes(n.group)) orderedGroups.push(n.group);
+  });
+  const groupIndex = (group) => orderedGroups.indexOf(group);
+  const groupColor = (group) => GROUP_TAB_COLORS[groupIndex(group) % 3];
+  const groupOffset = (group) => GROUP_TAB_OFFSETS[groupIndex(group) % 3];
 
   // Al montar (una sola vez — el ref sobrevive el doble-invoke de efectos de
   // StrictMode en desarrollo, así que esto no crea notas duplicadas): si la
@@ -86,34 +100,63 @@ export default function NotesModule({ instanceId }) {
   };
 
   if (!currentNote) {
+    const ungroupedNotes = notesLibrary.filter((n) => !n.group);
+
     return (
       <div className="notes-module">
         <div className="notes-module__library">
-          
           {notesLibrary.length === 0 ? (
             <p className="notes-module__empty">{t('notes.emptyLibrary')}</p>
           ) : (
-            <ul className="notes-module__library-list">
-              {notesLibrary.map((note) => (
-                <li key={note.id}>
-                  <button
-                    type="button"
-                    className="notes-module__library-item"
-                    style={{ borderLeftColor: note.color || 'var(--border)' }}
-                    onClick={() => setOpenNoteId(note.id)}
-                  >
-                    {note.title || t('notes.untitled')}
-                  </button>
-                </li>
+            <div className="notes-module__groups">
+              {orderedGroups.map((group, index) => (
+                <div
+                  key={group}
+                  className="notes-module__group"
+                  style={{ '--group-color': GROUP_TAB_COLORS[index % 3], '--group-offset': `${GROUP_TAB_OFFSETS[index % 3]}px` }}
+                >
+                  <div className="notes-module__group-tab">{group}</div>
+                  <div className="notes-module__group-body">
+                    {notesLibrary
+                      .filter((n) => n.group === group)
+                      .map((note) => (
+                        <button
+                          key={note.id}
+                          type="button"
+                          className="notes-module__group-item"
+                          onClick={() => setOpenNoteId(note.id)}
+                        >
+                          {note.title || t('notes.untitled')}
+                        </button>
+                      ))}
+                  </div>
+                </div>
               ))}
-            </ul>
+
+              {ungroupedNotes.length > 0 && (
+                <ul className="notes-module__library-list">
+                  {ungroupedNotes.map((note) => (
+                    <li key={note.id}>
+                      <button
+                        type="button"
+                        className="notes-module__library-item"
+                        style={{ borderLeftColor: note.color || 'var(--border)' }}
+                        onClick={() => setOpenNoteId(note.id)}
+                      >
+                        {note.title || t('notes.untitled')}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           )}
           <div className="notes-module__library-toolbar">
            <button type="button" onClick={handleNewNote}>
               <img src={addButton} alt="Add" style={{ width: "32px"}} />
             </button>
           </div>
-                     
+
         </div>
       </div>
     );
@@ -123,36 +166,32 @@ export default function NotesModule({ instanceId }) {
     <div className="notes-module">
       <div className="notes-module__toolbar">
         <button type="button" onClick={() => setOpenNoteId(null)}>
-          {t('notes.libraryButton')}
+          <img src={backButton} alt="Back" style={{ width: "16px", rotate: "90deg" }} />
         </button>
         <button type="button" onClick={handleNewNote}>
-          {t('notes.newButton')}
+          <img src={addButton} alt="Back" style={{ width: "24px", position: "relative", top: "4px" }} />
         </button>
         <button type="button" className="notes-module__delete" onClick={handleDeleteNote}>
-          {t('notes.deleteButton')}
+          <img src={deleteButton} alt="Back" style={{ width: "20px", position: "relative", top: "4px" }} />
         </button>
       </div>
 
-      <div className="notes-module__page">
-        <div className="notes-module__header">
-          <input
-            type="color"
-            className="notes-module__color"
-            value={currentNote.color || '#3a3a3a'}
-            onChange={(e) => updateNote(currentNote.id, { color: e.target.value })}
-            aria-label={t('notes.colorAria')}
-            title={t('notes.colorAria')}
-          />
-          <input
-            type="text"
-            className="notes-module__title"
-            value={currentNote.title}
-            onChange={(e) => updateNote(currentNote.id, { title: e.target.value })}
-            placeholder={t('notes.titlePlaceholder')}
-          />
-        </div>
+      <div
+        className="notes-module__page-wrap"
+        style={currentNote.group ? { '--group-color': groupColor(currentNote.group), '--group-offset': `${groupOffset(currentNote.group)}px` } : undefined}
+      >
+        {currentNote.group && <div className="notes-module__page-tab">{currentNote.group}</div>}
+        <div className="notes-module__page" style={groupColor(currentNote.group) ? { '--note-bg': groupColor(currentNote.group) } : { '--note-bg': 'white' }}>
+          <div className="notes-module__header">
 
-        <div className="notes-module__format-bar">
+            <input
+              type="text"
+              className="notes-module__title"
+              value={currentNote.title}
+              onChange={(e) => updateNote(currentNote.id, { title: e.target.value })}
+              placeholder={t('notes.titlePlaceholder')}
+            />
+                    <div className="notes-module__format-bar">
           <button
             type="button"
             className="notes-module__bold-button"
@@ -163,7 +202,8 @@ export default function NotesModule({ instanceId }) {
           >
             B
           </button>
-          <input
+          <div  className="notes-module__text-color-container">
+            <input
             type="color"
             className="notes-module__text-color"
             defaultValue={DEFAULT_TEXT_COLOR}
@@ -172,7 +212,29 @@ export default function NotesModule({ instanceId }) {
             title={t('notes.textColorAria')}
             aria-label={t('notes.textColorAria')}
           />
+          </div>
         </div>
+          </div>
+
+          <div className="notes-module__group-row">
+            <input
+              type="text"
+              list="notes-module-group-options"
+              className="notes-module__group-input"
+              value={currentNote.group || ''}
+              onChange={(e) => updateNote(currentNote.id, { group: e.target.value.trim() || null })}
+              placeholder={t('notes.groupPlaceholder')}
+              aria-label={t('notes.groupLabel')}
+              title={t('notes.groupLabel')}
+            />
+            <datalist id="notes-module-group-options">
+              {orderedGroups.map((group) => (
+                <option key={group} value={group} />
+              ))}
+            </datalist>
+          </div>
+
+
 
         <div
           ref={bodyRef}
@@ -184,6 +246,7 @@ export default function NotesModule({ instanceId }) {
           onDrop={handleDrop}
           data-placeholder={t('notes.contentPlaceholder')}
         />
+        </div>
       </div>
     </div>
   );
