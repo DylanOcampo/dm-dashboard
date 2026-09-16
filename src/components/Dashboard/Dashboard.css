@@ -250,13 +250,41 @@
 }
 
 
+
+
 .widget__body {
-  scrollbar-width:none;
+  scrollbar-width: thin;
+  scrollbar-color: #FFD6B2 #ffd6b29f;
 
   flex: 1;
   min-height: 0;
   overflow: auto;
   padding: 0.75rem;
+}
+
+
+
+.widget__body::-webkit-scrollbar,
+.widget__body *::-webkit-scrollbar {
+  width: thin;
+  height: thin; 
+  width: 10px;
+  height: 10px;
+  background: #ffd6b29f;
+}
+
+
+
+.widget__body::-webkit-scrollbar-thumb,
+.widget__body *::-webkit-scrollbar-thumb {
+  background: #FFD6B2;
+  border-radius: 10px;
+  
+}
+
+.widget__body::-webkit-scrollbar-button,
+.widget__body *::-webkit-scrollbar-button {
+  display: none;
 }
 
 .react-grid-item.react-grid-placeholder {

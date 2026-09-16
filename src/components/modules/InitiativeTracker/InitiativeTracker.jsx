@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { useApp } from '../../../context/AppContext';
 import { CONDITION_BY_ID } from '../../../data/conditions';
 import './InitiativeTracker.css';
-
+import { resolveCombatantAvatar } from "../../../services/combatants";
 function rollInitiative() {
   return Math.floor(Math.random() * 20) + 1;
 }
@@ -45,7 +45,11 @@ export default function InitiativeTracker({ instanceId }) {
         conditions: [],
         hp: { current: player.hp?.max ?? 10, max: player.hp?.max ?? 10 },
         ac: player.ac,
-        image: player.avatar,
+        image: resolveCombatantAvatar({ type: 'player', playerId: player.id }, {
+          players,
+          enemies,
+          npcs,
+        }),
       },
     ]);
     setSelectedPlayerId('');
@@ -155,7 +159,6 @@ export default function InitiativeTracker({ instanceId }) {
           <li
             key={combatant.id}
             className={`initiative-tracker__card ${index === currentTurnIndex ? 'is-current' : ''}`}
-            style={{ borderLeftColor: combatant.color }}
           >
             <div className="initiative-tracker__order">
               <button
@@ -176,16 +179,37 @@ export default function InitiativeTracker({ instanceId }) {
               >
                 ▼
               </button>
+              
             </div>
-            <span className="initiative-tracker__initiative" title={t('initiative.initiativeTitleHint')}>
-              {combatant.initiative}
-            </span>
+
+                                    {(() => {
+              const avatar = resolveCombatantAvatar(combatant, {
+                players,
+                enemies,
+                npcs,
+              });
+              return avatar ? (
+                  <img
+                    src={avatar}
+                    alt={combatant.name}
+                    className="hp-tracker__combatant-image"
+                  />
+                ) : (
+                  <div
+                    className="hp-tracker__combatant-image-placeholder"
+                    style={{ background: combatant.color }}
+                  >
+                    {combatant.name.charAt(0).toUpperCase()}
+                  </div>
+                );
+            })()}
             <input
               type="text"
               className="initiative-tracker__name"
               value={combatant.name}
               onChange={(e) => updateCombatant(combatant.id, { name: e.target.value })}
             />
+
             {combatant.type === 'player' && combatant.level != null && (
               <span className="initiative-tracker__level">
                 {t('initiative.levelPrefix')}

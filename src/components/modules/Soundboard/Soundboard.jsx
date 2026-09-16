@@ -14,7 +14,7 @@ export default function Soundboard({ instanceId }) {
   const [urlInput, setUrlInput] = useState('');
   const [startInput, setStartInput] = useState(0);
   const [endInput, setEndInput] = useState(5);
-  const [emojiInput, setEmojiInput] = useState('🔊');
+  const [emojiInput, setEmojiInput] = useState('Sonido');
   const [error, setError] = useState('');
 
   const [activeClipId, setActiveClipId] = useState(null);

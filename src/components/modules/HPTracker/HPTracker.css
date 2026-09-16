@@ -44,7 +44,7 @@
 }
 
 .hp-tracker__row {
-
+  justify-content: space-between;
   background: var(--light-bg);
   border-radius: 6px;
   padding: 0.45rem 0.6rem;
@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  width: 50%;
+  width: calc(100% - 180px);
 }
 
 .hp-tracker__name-value-container{
@@ -216,8 +216,8 @@
   padding: 0.2rem 0.45rem;
 
   border: 0px solid var(--border);
-  background: var(--bg);
-  color: var(--text-dark);
+  background-color: #DEAD51;
+  color: var(--text);
   cursor: pointer;
   font-size: 0.75rem;
   height: 100%;
@@ -248,8 +248,8 @@
 }
 
 .hp-tracker__stepper--temp .hp-tracker__stepper-row button {
-  border-color: #518EDE;
-  color: #518EDE;
+  background-color: #518EDE;
+  color: var(--text);
 }
 
 .hp-tracker__amount-input {
@@ -258,9 +258,34 @@
   padding: 0.2rem;
   height: 100%;
   border: 0px solid var(--border);
-  background: var(--bg);
+  background: #EFCB88;
   color: var(--text);
   font-weight: 700;
+  text-align: center;
+}
+
+.hp-tracker__amount-input--temp {
+  width: 2.4rem;
+  text-align: center;
+  padding: 0.2rem;
+  height: 100%;
+  border: 0px solid var(--border);
+  background: #88B4EF;
+  color: var(--text);
+  font-weight: 700;
+  text-align: center;
+}
+
+.hp-tracker__stepper-button--right{
+  border-radius: 0px 6px 6px 0px;
+}
+
+.hp-tracker__stepper-button--left{
+  border-radius: 6px 0px 0px 6px;
+  -webkit-border-radius: 6px 0px 0px 6px;
+  -moz-border-radius: 6px 0px 0px 6px;
+  -ms-border-radius: 6px 0px 0px 6px;
+  -o-border-radius: 6px 0px 0px 6px;
 }
 
 .hp-tracker__max-label {
@@ -277,6 +302,6 @@
   padding: 0.2rem;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--base-button);
   color: var(--text-dark);
 }

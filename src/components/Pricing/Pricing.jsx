@@ -49,6 +49,7 @@ export default function Pricing() {
           <div key={plan.id} className="pricing__card">
             <h3>{t(`pricing.plans.${plan.id}.name`)}</h3>
             <p className="pricing__storage">{t('pricing.storage', { gb: plan.storageGB })}</p>
+            {plan.id === 'pro' && <p className="pricing__feature">{t('pricing.plans.pro.feature')}</p>}
             <p className="pricing__price">
               <span className="pricing__amount">${plan[billing].amount}</span>
               <span className="pricing__period">

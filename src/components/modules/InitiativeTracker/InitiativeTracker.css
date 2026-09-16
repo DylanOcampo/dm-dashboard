@@ -16,8 +16,8 @@
   padding: 0.3rem 0.5rem;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--surface-header);
-  color: var(--text);
+  background: var(--light-bg);
+  color: var(--text-dark);
   font-size: 0.78rem;
   cursor: pointer;
 }
@@ -52,7 +52,8 @@
   padding: 0.4rem 0.5rem;
   border-radius: 6px;
   border-left: 4px solid var(--border);
-  background: var(--surface-header);
+  background: var(--light-bg);
+  color: var(--text-dark);
 }
 
 .initiative-tracker__card.is-current {
@@ -99,7 +100,7 @@
   padding: 0.2rem;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--accent);
   color: var(--text);
   font-weight: 700;
   flex-shrink: 0;
@@ -112,26 +113,26 @@
   border-radius: 4px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--text);
+  color: var(--text-dark);
   font-size: 0.9rem;
 }
 
 .initiative-tracker__name:hover,
 .initiative-tracker__name:focus {
-  border-color: var(--border);
-  background: var(--bg);
+  border-color: white;
+  background: var(--icon-bg);
 }
 
 .initiative-tracker__level {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-dark);
   flex-shrink: 0;
 }
 
 .initiative-tracker__hp,
 .initiative-tracker__ac {
   font-size: 0.72rem;
-  color: var(--text-muted);
+  color: var(--text-dark);
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -172,7 +173,7 @@
 .initiative-tracker__remove {
   border: none;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-dark);
   cursor: pointer;
   font-size: 1rem;
   flex-shrink: 0;

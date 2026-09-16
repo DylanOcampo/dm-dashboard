@@ -225,6 +225,7 @@ export default function HPTracker({ instanceId }) {
                       type="button"
                       onClick={() => applyDelta(combatant.id, hpAmount)}
                       aria-label={t("hpTracker.increaseAria", { label: t("hpTracker.hpLabel"), name: combatant.name })}
+                      className="hp-tracker__stepper-button--left"
                     >
                       +
                     </button>
@@ -240,6 +241,7 @@ export default function HPTracker({ instanceId }) {
                       type="button"
                       onClick={() => applyDelta(combatant.id, -hpAmount)}
                       aria-label={t("hpTracker.decreaseAria", { label: t("hpTracker.hpLabel"), name: combatant.name })}
+                      className="hp-tracker__stepper-button--right"
                     >
                       −
                     </button>
@@ -253,13 +255,14 @@ export default function HPTracker({ instanceId }) {
                       type="button"
                       onClick={() => applyTempDelta(combatant.id, tempAmount)}
                       aria-label={t("hpTracker.increaseAria", { label: t("hpTracker.tempLabel"), name: combatant.name })}
+                      className="hp-tracker__stepper-button--left"
                     >
                       +
                     </button>
                     <input
                       type="number"
                       min="0"
-                      className="hp-tracker__amount-input"
+                      className="hp-tracker__amount-input--temp"
                       value={tempAmount}
                       onChange={(e) => setAmount(combatant.id, "temp", e.target.value)}
                       aria-label={t("hpTracker.amountAria", { label: t("hpTracker.tempLabel"), name: combatant.name })}
@@ -268,22 +271,13 @@ export default function HPTracker({ instanceId }) {
                       type="button"
                       onClick={() => applyTempDelta(combatant.id, -tempAmount)}
                       aria-label={t("hpTracker.decreaseAria", { label: t("hpTracker.tempLabel"), name: combatant.name })}
+                      className="hp-tracker__stepper-button--right"
                     >
                       −
                     </button>
                   </div>
                 </div>
 
-                <label className="hp-tracker__max-label">
-                  {t("hpTracker.maxLabel")}
-                  <input
-                    type="number"
-                    min="1"
-                    className="hp-tracker__max-input"
-                    value={hp.max}
-                    onChange={(e) => setMax(combatant.id, e.target.value)}
-                  />
-                </label>
               </div>
             </li>
           );

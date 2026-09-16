@@ -43,25 +43,6 @@
   flex-direction: column;
   gap: 0.5rem;
   overflow-y: auto;
-
-}
-.notes-module__library::-webkit-scrollbar {
-  width: thin; /* Chrome, Safari, Opera */
-  height: thin; /* Chrome, Safari, Opera */
-  background: #ffd6b29f; 
-  width: 10px; 
-  height: 10px; 
-  
-}
-
-.notes-module__library::-webkit-scrollbar-thumb {
-  background: #FFD6B2;
-
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
 }
 
 .notes-module__empty {

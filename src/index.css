@@ -10,6 +10,7 @@
   --accent: #736448;
   --accent-contrast: #D59B34;
   --danger: #7F4242;
+  --danger-light: #d16060;
   --success: #4E7F42;
   --gold: #e9c46a;
   --base-button: #F5EFE3;
@@ -21,6 +22,7 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
 }
 
 html,

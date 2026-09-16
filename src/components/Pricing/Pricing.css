@@ -63,6 +63,12 @@
   margin: 0;
 }
 
+.pricing__feature {
+  color: var(--accent);
+  font-size: 0.75rem;
+  margin: 0;
+}
+
 .pricing__price {
   margin: 0.3rem 0;
 }

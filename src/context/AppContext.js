@@ -104,15 +104,20 @@ export function AppProvider({ children }) {
   // en la nube pasan a solo lectura hasta que se vuelva a suscribir, y se
   // borran automáticamente 30 días después (ver cleanup-expired-files).
   const isInactiveSubscriber = Boolean(subscription) && !isPremium;
+  // Básico y Pro comparten isPremium (cloud sync, storage); Pro es el único
+  // plan con acceso a features en tiempo real (ver useCombatBroadcast).
+  const isPro =
+    isPremium && (subscription?.plan === 'pro_monthly' || subscription?.plan === 'pro_yearly');
 
   const user = useMemo(
     () => ({
       ...authUser,
       isPremium,
+      isPro,
       isInactiveSubscriber,
       hasSubscribedBefore: Boolean(subscription),
     }),
-    [authUser, isPremium, isInactiveSubscriber, subscription]
+    [authUser, isPremium, isPro, isInactiveSubscriber, subscription]
   );
 
   const deleteAccount = useCallback(async () => {
@@ -380,7 +385,7 @@ export function AppProvider({ children }) {
   );
 
   useCombatBroadcast({
-    isPremium: user.isPremium,
+    isPro: user.isPro,
     shareEnabled: Boolean(share?.enabled),
     shareToken: share?.share_token,
     combats,

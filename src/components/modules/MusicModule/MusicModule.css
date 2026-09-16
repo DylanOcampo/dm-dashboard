@@ -25,13 +25,13 @@
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--accent);
-  color: var(--accent-contrast);
+  color: var(--text);
   cursor: pointer;
   font-size: 0.85rem;
 }
 
 .music-module__error {
-  color: var(--danger);
+  color: var(--danger-light);
   font-size: 0.8rem;
   margin: 0;
 }
@@ -87,7 +87,7 @@
   padding: 0.35rem 0.5rem;
   border-radius: 6px;
   border: 1px solid transparent;
-  background: var(--surface-header);
+  background: var(--light-bg);
 }
 
 .music-module__track.is-active {
@@ -112,12 +112,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.85rem;
+  color: var(--text-dark);
 }
 
 .music-module__remove-btn {
   border: none;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-dark);
   cursor: pointer;
   font-size: 1rem;
   flex-shrink: 0;

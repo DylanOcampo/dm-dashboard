@@ -12,11 +12,16 @@ create table if not exists public.dashboard_data (
 
 alter table public.dashboard_data enable row level security;
 
-create policy "Users can manage their own dashboard data"
+drop policy if exists "Users can manage their own dashboard data" on public.dashboard_data;
+
+-- Lectura siempre permitida al dueño, incluso con suscripción inactiva (no
+-- perder visibilidad de datos ya sincronizados si se vence la suscripción).
+-- Insert/update/delete requieren suscripción activa — ver esas policies más
+-- abajo, después de que se define has_active_subscription().
+create policy "Users can read their own dashboard data"
   on public.dashboard_data
-  for all
-  using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+  for select
+  using (auth.uid() = user_id);
 
 -- data_key esperados por el frontend:
 -- Globales (compartidos entre todas las copias de módulos, y entre todas las escenas):
@@ -107,6 +112,24 @@ as $$
     where user_id = uid and status in ('active', 'trialing')
   );
 $$;
+
+-- Escritura de dashboard_data solo con suscripción activa, reflejando en RLS
+-- lo que ya exige el cliente (isPremium) para que no sea posible saltearse
+-- el paywall del cloud sync pegándole directo a la API con el JWT propio.
+create policy "Users can add dashboard data while subscribed"
+  on public.dashboard_data
+  for insert
+  with check (auth.uid() = user_id and public.has_active_subscription(auth.uid()));
+
+create policy "Users can update dashboard data while subscribed"
+  on public.dashboard_data
+  for update
+  using (auth.uid() = user_id and public.has_active_subscription(auth.uid()));
+
+create policy "Users can delete dashboard data while subscribed"
+  on public.dashboard_data
+  for delete
+  using (auth.uid() = user_id and public.has_active_subscription(auth.uid()));
 
 -- Metadata de cada archivo subido a Supabase Storage por un usuario con
 -- suscripción activa. module_instance_id es el mismo instanceId que ya usan

@@ -27,7 +27,7 @@
   top: calc(100% + 0.3rem);
   right: 0;
   z-index: 5;
-  background: var(--surface);
+  background: var(--surface-header);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.5rem 0.6rem;
@@ -35,10 +35,47 @@
 }
 
 .volume-control__popover input[type='range'] {
-  writing-mode: vertical-lr;
-  direction: rtl;
-  width: 1.4rem;
-  height: 5.5rem;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 5.5rem;
+  height: 1.4rem;
+  margin: 0;
   cursor: pointer;
-  accent-color: var(--accent);
+  background: transparent;
+}
+
+.volume-control__popover input[type='range']::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--text-dark);
+}
+
+.volume-control__popover input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-contrast);
+  background:
+    linear-gradient(var(--base-button), var(--base-button)) center / 2px 55% no-repeat,
+    var(--accent);
+  cursor: pointer;
+}
+
+.volume-control__popover input[type='range']::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--text-dark);
+}
+
+.volume-control__popover input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-contrast);
+  background:
+    linear-gradient(var(--base-button), var(--base-button)) center / 2px 55% no-repeat,
+    var(--accent);
+  cursor: pointer;
 }
